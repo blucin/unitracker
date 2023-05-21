@@ -1,5 +1,3 @@
-// import { SignInButton } from "@clerk/nextjs";
-import { UserButton } from "@clerk/nextjs";
 import { type NextPage } from "next";
 
 //import Link from "next/link";
@@ -13,7 +11,6 @@ const LandingPage: NextPage = () => {
     <>
       <main>
         <p> Landing Page </p>
-        <UserButton />
       </main>
     </>
   );
