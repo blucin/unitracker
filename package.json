@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.17.4",
+    "@icons-pack/react-simple-icons": "^7.2.0",
     "@prisma/client": "^4.11.0",
+    "@radix-ui/react-label": "^2.0.1",
+    "@radix-ui/react-slot": "^1.0.1",
     "@t3-oss/env-nextjs": "^0.2.1",
     "@tanstack/react-query": "^4.28.0",
     "@trpc/client": "^10.18.0",
