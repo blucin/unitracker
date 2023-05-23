@@ -1,17 +1,14 @@
 import { type NextPage } from "next";
-import { signOut } from "next-auth/react"
-//import Link from "next/link";
-//import { api } from "~/utils/api";
-
+import { useSession, signIn, signOut } from "next-auth/react";
 
 const LandingPage: NextPage = () => {
-  //const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const { data: session } = useSession();
 
   return (
     <>
       <main>
         <p> Landing Page </p>
-        <button onClick={()=>void signOut()}>Sign Out</button>
+        <button onClick={()=>void signIn()}>Sign In</button>
       </main>
     </>
   );
