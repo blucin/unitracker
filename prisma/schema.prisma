@@ -22,6 +22,12 @@ enum DayEnum {
   Sunday
 }
 
+enum AttendanceEnum {
+  Present
+  Absent
+  Leave
+}
+
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -53,15 +59,16 @@ model Session {
 }
 
 model User {
-  id            String      @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?     @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   Subject       Subject[]
   TimeTable     TimeTable[]
+  Attendance    Attendance[]
 }
 
 model VerificationToken {
@@ -86,17 +93,40 @@ model Subject {
 }
 
 model TimeTable {
-  id        String   @id @default(cuid())
-  subject   Subject  @relation(fields: [subjectId], references: [id])
-  subjectId String
-  dayName   DayEnum
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  isLab     Boolean  @default(false)
-  startTime DateTime @db.Time
-  endTime   DateTime @db.Time
+  id            String       @id @default(cuid())
+  timetableName String
+  subject       Subject      @relation(fields: [subjectId], references: [id])
+  subjectId     String
+  dayName       DayEnum
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  isLab         Boolean      @default(false)
+  startTime     DateTime     @db.Time
+  endTime       DateTime     @db.Time
+  Attendance    Attendance[]
 
   @@unique([subjectId, dayName, startTime, endTime])
   @@index([subjectId])
   @@index([userId])
+}
+
+model Attendance {
+  id          String         @id @default(cuid())
+  timetable   TimeTable      @relation(fields: [timetableId], references: [id])
+  timetableId String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  date        DateTime
+  status      AttendanceEnum
+
+  @@unique([timetableId, userId, date])
+  @@index([timetableId])
+  @@index([userId])
+}
+
+model Holidays {
+  id        String   @id @default(cuid())
+  date      DateTime
+  holiday   String
+  isWeekend Boolean  @default(false)
 }
