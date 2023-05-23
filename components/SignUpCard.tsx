@@ -12,9 +12,10 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { GithubIcon } from "lucide-react";
 import { SiGoogle } from "@icons-pack/react-simple-icons";
+import { signIn } from "next-auth/react";
 
 export default function SignUpCard({
-  className
+  className,
 }: React.HTMLAttributes<HTMLElement>) {
   return (
     <Card className={className}>
@@ -26,11 +27,11 @@ export default function SignUpCard({
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className="grid grid-cols-2 gap-6">
-          <Button variant="outline">
+          <Button variant="outline" onClick={()=>void signIn("github")}>
             <GithubIcon className="mr-2 h-4 w-4" />
             Github
           </Button>
-          <Button variant="outline">
+          <Button variant="outline" onClick={()=>void signIn("google")}>
             <SiGoogle className="mr-2 h-4 w-4" />
             Google
           </Button>
