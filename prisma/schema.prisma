@@ -61,8 +61,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Subject       Subject[]
-  Day           Day[]
-  TimeSlots     TimeSlots[]
   TimeTable     TimeTable[]
 }
 
@@ -87,44 +85,18 @@ model Subject {
   @@index([userId])
 }
 
-model Day {
-  id        String      @id @default(cuid())
-  dayName   DayEnum
-  TimeTable TimeTable[]
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-
-  @@unique([dayName])
-  @@index([userId])
-}
-
-model TimeSlots {
-  id        String      @id @default(cuid())
-  startTime DateTime    @db.Time
-  endTime   DateTime    @db.Time
-  TimeTable TimeTable[]
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-
-  @@unique([startTime, endTime])
-  @@index([userId])
-}
-
 model TimeTable {
-  id         String    @id @default(cuid())
-  subject    Subject   @relation(fields: [subjectId], references: [id])
-  subjectId  String
-  day        Day       @relation(fields: [dayId], references: [id])
-  dayId      String
-  timeSlot   TimeSlots @relation(fields: [timeSlotId], references: [id])
-  timeSlotId String
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  isLab      Boolean   @default(false)
+  id        String   @id @default(cuid())
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  subjectId String
+  dayName   DayEnum
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  isLab     Boolean  @default(false)
+  startTime DateTime @db.Time
+  endTime   DateTime @db.Time
 
-  @@unique([subjectId, dayId, timeSlotId])
+  @@unique([subjectId, dayName, startTime, endTime])
   @@index([subjectId])
-  @@index([dayId])
-  @@index([timeSlotId])
   @@index([userId])
 }
