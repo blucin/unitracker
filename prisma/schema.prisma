@@ -22,12 +22,6 @@ enum DayEnum {
   Sunday
 }
 
-enum AttendanceEnum {
-  Present
-  Absent
-  Leave
-}
-
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -117,7 +111,6 @@ model Attendance {
   user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
   date        DateTime
-  status      AttendanceEnum
 
   @@unique([timetableId, userId, date])
   @@index([timetableId])
