@@ -15,10 +15,8 @@
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-
 import { prisma } from "~/server/db";
-
-type CreateContextOptions = Record<string, never>;
+import { getServerAuthSession } from "~/server/auth";
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -26,9 +24,15 @@ type CreateContextOptions = Record<string, never>;
  *
  * @see https://trpc.io/docs/context
  */
-export const createTRPCContext = (_opts: CreateNextContextOptions) => {
+export const createTRPCContext = async (opts: CreateNextContextOptions) => {
+  const { req, res } = opts;
+  const session = await getServerAuthSession(opts);
+
   return {
-    prisma,
+    req,
+    res,
+    session,
+    prisma
   };
 };
 
