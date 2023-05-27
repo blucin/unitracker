@@ -110,7 +110,7 @@ model Attendance {
   timetableId String
   user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
-  date        DateTime
+  date        DateTime       @db.Date
 
   @@unique([timetableId, userId, date])
   @@index([timetableId])
