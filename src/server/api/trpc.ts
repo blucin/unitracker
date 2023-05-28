@@ -15,8 +15,33 @@
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import type { Session } from "next-auth";
 import { prisma } from "~/server/db";
 import { getServerAuthSession } from "~/server/auth";
+
+/**
+ * Defines your inner context shape.
+ * Add fields here that the inner context brings.
+ */
+interface CreateInnerContextOptions {
+  session: Session | null;
+}
+
+/**
+ * Inner context. Will always be available in your procedures, in contrast to the outer context.
+ *
+ * Also useful for:
+ * - testing, so you don't have to mock Next.js' `req`/`res`
+ * - tRPC's `createServerSideHelpers` where we don't have `req`/`res`
+ *
+ * @see https://trpc.io/docs/context#inner-and-outer-context
+ */
+export function createInnerTRPCContext(opts: CreateInnerContextOptions) {
+  return {
+    prisma,
+    session: opts.session,
+  };
+}
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
