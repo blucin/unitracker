@@ -13,6 +13,7 @@ const Dashboard:NextPageWithLayout = () => {
   return (
     <>
       <p> Dashboard </p>
+      <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore maxime optio temporibus reiciendis, quas illo? Ipsam error repudiandae ducimus nemo minima eos, id esse molestiae est! Natus pariatur ipsum magnam!</p>
     </>
   );
 }
