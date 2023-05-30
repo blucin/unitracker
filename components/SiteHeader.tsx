@@ -4,10 +4,10 @@ import { siteConfig } from "~/config/site";
 import { cn } from "~/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { CommandMenu } from "@/components/CommandMenu";
-import { Icons } from "@/components/icons";
+import { Github, Twitter } from "lucide-react";
 import { MainNav } from "@/components/Main-Nav";
 import { MobileNav } from "@/components/Mobile-Nav";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ModeToggle } from "@/components/ModeToggler";
 
 export function SiteHeader() {
   return (
@@ -34,7 +34,7 @@ export function SiteHeader() {
                   "w-9 px-0"
                 )}
               >
-                <Icons.gitHub className="h-5 w-5" />
+                <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
               </div>
             </Link>
@@ -52,7 +52,7 @@ export function SiteHeader() {
                   "w-9 px-0"
                 )}
               >
-                <Icons.twitter className="h-5 w-5 fill-current" />
+                <Twitter className="h-5 w-5 fill-current" />
                 <span className="sr-only">Twitter</span>
               </div>
             </Link>
