@@ -4,6 +4,7 @@ import type { Session } from "next-auth";
 import { api } from "~/utils/api";
 import type { NextPage } from "next";
 import type { ReactElement, ReactNode } from 'react';
+import { ThemeProvider } from "@/components/ThemeProvider";  
 
 import "~/styles/globals.css";
 
@@ -23,7 +24,9 @@ const MyApp= ({
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <SessionProvider session={session}>
-      {getLayout(<Component {...pageProps} />)}
+      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        {getLayout(<Component {...pageProps} />)}
+      </ThemeProvider>
     </SessionProvider>
   );
 };
