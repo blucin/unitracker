@@ -9,8 +9,19 @@ export const navConfig: NavConfig = {
   mainNav: [],
   sidebarNav: [
     {
-      title: "Overview",
-      items: [],
+      title: "Quick Navigation",
+      items: [
+        {
+          title: "Dashboard",
+          items: [],
+          href: "/dashboard",
+        },
+        {
+          title: "Home",
+          items: [],
+          href: "/",
+        },
+      ],
     },
     {
       title: "Subjects",
@@ -18,10 +29,12 @@ export const navConfig: NavConfig = {
         {
           title: "Create Subject",
           items: [],
+          href: "/subject/create",
         },
         {
-          title: "Edit Subject",
+          title: "View Subject",
           items: [],
+          href: "/subject",
         },
       ],
     },
@@ -31,10 +44,12 @@ export const navConfig: NavConfig = {
         {
           title: "Create Timetable",
           items: [],
+          href: "/timetable/create",
         },
         {
           title: "Edit Timetable",
           items: [],
+          href: "/timetable",
         },
       ],
     },
