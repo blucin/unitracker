@@ -4,7 +4,7 @@ import { siteConfig } from "~/config/site";
 import { cn } from "~/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { CommandMenu } from "@/components/CommandMenu";
-import { Github, Twitter } from "lucide-react";
+import { Github } from "lucide-react";
 import { MainNav } from "@/components/Main-Nav";
 import { MobileNav } from "@/components/Mobile-Nav";
 import { ModeToggle } from "@/components/ModeToggler";
@@ -36,24 +36,6 @@ export function SiteHeader() {
               >
                 <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
-              </div>
-            </Link>
-            <Link
-              href={siteConfig.links.twitter}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div
-                className={cn(
-                  buttonVariants({
-                    size: "sm",
-                    variant: "ghost",
-                  }),
-                  "w-9 px-0"
-                )}
-              >
-                <Twitter className="h-5 w-5 fill-current" />
-                <span className="sr-only">Twitter</span>
               </div>
             </Link>
             <ModeToggle />
