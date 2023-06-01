@@ -1,14 +1,21 @@
 import { SessionProvider } from "next-auth/react";
-import type { AppProps } from "next/app"
+import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
 import { api } from "~/utils/api";
 import type { NextPage } from "next";
-import type { ReactElement, ReactNode } from 'react';
-import { ThemeProvider } from "@/components/ThemeProvider";  
+import type { ReactElement, ReactNode } from "react";
+import { ThemeProvider } from "@/components/ThemeProvider";
+//import Head from "next/head";
+//import { siteConfig } from "~/config/site";
+//import { cn } from "~/lib/utils";
+//import { fontSans } from "~/lib/fonts";
 
 import "~/styles/globals.css";
 
-export type NextPageWithLayout<P = NonNullable<unknown>, IP = P> = NextPage<P, IP> & {
+export type NextPageWithLayout<P = NonNullable<unknown>, IP = P> = NextPage<
+  P,
+  IP
+> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
@@ -16,7 +23,7 @@ type AppPropsWithLayout = AppProps<{ session: Session }> & {
   Component: NextPageWithLayout;
 };
 
-const MyApp= ({
+const MyApp = ({
   Component,
   pageProps: { session, ...pageProps },
 }: AppPropsWithLayout) => {
