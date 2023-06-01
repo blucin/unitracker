@@ -4,12 +4,15 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navConfig } from "~/config/sitelink";
+import { cn } from "~/lib/utils";
 
-export function DashboardNavBar() {
+export function DashboardNavBar({
+  className,
+}: React.HTMLAttributes<HTMLElement>) {
   const pathname = usePathname();
 
   return (
-    <div className="hidden pb-12 lg:block">
+    <div className={cn("hidden pb-12 lg:block", className)}>
       <div className="space-y-4 py-4">
         {navConfig.sidebarNav.map((object, index) => (
           <div className="px-4 py-2" key={index}>
