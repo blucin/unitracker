@@ -1,7 +1,9 @@
 import { createTRPCRouter } from "~/server/api/trpc";
 import { attendanceRouter } from "./routers/attendance";
 import { subjectRouter } from "./routers/subject";
+import { timeTableRouter } from "./routers/timetable";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+
 
 /**
  * This is the primary router for your server.
@@ -11,6 +13,7 @@ import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 export const appRouter = createTRPCRouter({
   attendance: attendanceRouter,
   subject: subjectRouter,
+  timetable: timeTableRouter,
 });
 
 // export type definition of API
