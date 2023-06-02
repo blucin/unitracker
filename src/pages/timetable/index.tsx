@@ -1,6 +1,10 @@
 import { useSession } from "next-auth/react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from '~/pages/_app';
+import { api } from "~/utils/api";  
+import { LoadingTable } from "@/components/LoadingTable";
+import { TimeTable } from "@/components/TimeTable";
+import { Separator } from "@/components/ui/separator";
 
 const Timetable:NextPageWithLayout = () => {
   useSession({
@@ -9,10 +13,23 @@ const Timetable:NextPageWithLayout = () => {
       return { redirectTo: "/login" };
     },
   });
+  const { data, isLoading } = api.timetable.getAll.useQuery();
+  console.log("TIMETABLE: ", data);
+  
   return (
     <>
-      <p> View Timetable </p>
-      <p> Labore maxime optio temporibus reiciendis, quas illo? Ipsam error repudiandae ducimus nemo minima eos, id esse molestiae est! Natus pariatur ipsum magnam!</p>
+      <div className="space-y-2">
+        <h2 className="text-2xl font-bold tracking-tight"> Timetables </h2>
+        <p className="text-muted-foreground">
+          View your timetable here.
+        </p>
+      </div>
+      <Separator className="my-5" />
+      {isLoading ? (
+        <LoadingTable rows={10} cols={3} />
+      ) : (
+        <TimeTable data={data} />
+      )}
     </>
   );
 }
