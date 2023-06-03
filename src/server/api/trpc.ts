@@ -18,6 +18,8 @@ import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import type { Session } from "next-auth";
 import { prisma } from "~/server/db";
 import { getServerAuthSession } from "~/server/auth";
+import { drizzle } from "drizzle-orm/planetscale-serverless";
+import { connect } from "@planetscale/database";
 
 /**
  * Defines your inner context shape.
@@ -53,7 +55,17 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
   const session = await getServerAuthSession(opts);
 
+  // drizzle orm 
+  const connection = connect({
+    host: process.env["DATABASE_HOST"],
+    username: process.env["DATABASE_USERNAME"],
+    password: process.env["DATABASE_PASSWORD"],
+  });
+
+  const db = drizzle(connection);
+
   return {
+    db,
     req,
     res,
     session,
