@@ -1,20 +1,11 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import _ from "lodash";
+
 
 export const timeTableRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
-    const timeTables = await ctx.prisma.timeTable.findMany({
-      where: {
-        userId: ctx.session.user.id,
-      },
-      include: {
-        subject: true,
-        Attendance: true,
-      },
-      orderBy: {
-        startTime: "asc",
-      },
-    });
+    const timeTables = await ctx.db.select().from(tim)
     return timeTables;
   }),
 });
