@@ -1,5 +1,5 @@
 import { mysqlTable, mysqlSchema, AnyMySqlColumn, uniqueIndex, index, varchar, text, int, date, datetime, tinyint, mysqlEnum, time } from "drizzle-orm/mysql-core"
-import { sql } from "drizzle-orm"
+import { InferModel, sql } from "drizzle-orm"
 
 
 export const account = mysqlTable("Account", {
@@ -114,3 +114,12 @@ export const verificationToken = mysqlTable("VerificationToken", {
 		identifierTokenKey: uniqueIndex("VerificationToken_identifier_token_key").on(table.identifier, table.token),
 	}
 });
+
+export type TimeTable = InferModel<typeof timeTable>;
+export type Subject = InferModel<typeof subject>;
+export type Session = InferModel<typeof session>;
+export type Holidays = InferModel<typeof holidays>;
+export type Attendance = InferModel<typeof attendance>;
+export type Account = InferModel<typeof account>;
+export type User = InferModel<typeof user>;
+export type VerificationToken = InferModel<typeof verificationToken>;
