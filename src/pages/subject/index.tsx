@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { SubjectTable } from "@/components/SubjectTable";
 import { api } from "~/utils/api";
 import { LoadingTable } from "@/components/LoadingTable";
+import { Balancer } from "react-wrap-balancer";
 
 const Subject: NextPageWithLayout = () => {
   useSession({
@@ -19,20 +20,20 @@ const Subject: NextPageWithLayout = () => {
   const handleDelete = (_id: string) => {
     mutate({ id: _id });
   };
-  
+
   return (
     <>
       <div className="space-y-2">
         <h2 className="text-2xl font-bold tracking-tight"> Subjects </h2>
-        <p className="text-muted-foreground">
-          View and manage your subjects here.
+        <p className="text-lg text-muted-foreground">
+          <Balancer>View and manage your subjects here.</Balancer>
         </p>
       </div>
       <Separator className="my-5" />
       {isLoading ? (
         <LoadingTable rows={10} cols={3} />
       ) : (
-        <SubjectTable data={data} handleDelete={handleDelete}/>
+        <SubjectTable data={data} handleDelete={handleDelete} />
       )}
     </>
   );
