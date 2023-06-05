@@ -1,5 +1,15 @@
 import { cn } from "~/lib/utils";
 import type { RouterOutput } from "~/server/api/root";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type TimeTableProps = {
   className?: string;
@@ -11,20 +21,48 @@ export function TimeTable({ ...props }: TimeTableProps) {
     <>
       {props.data &&
         Object.entries(props.data).map(([timetableName, timetable]) => (
-          <div key={timetableName}>
-            <h2 className="font-heading mt-12 scroll-m-20 pb-2 text-2xl font-semibold tracking-tight first:mt-0 mb-4">{timetableName}</h2>
-            <div className="flex mb-8 border justify-between">
+          <div key={timetableName} className="border-b">
+            <h2 className="text-lg font-bold tracking-tight my-4">
+              {timetableName}
+            </h2>
+            <Tabs defaultValue="Monday">
+              <TabsList>
+                {Object.entries(timetable).map(([day, dayData]) => (
+                  <TabsTrigger key={day} value={day}>
+                    {day}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
               {Object.entries(timetable).map(([day, dayData]) => (
-                <div key={day} className="flex flex-col border flex-grow">
-                  <span className="py-3 px-4 align-middle font-medium text-muted-foreground border-b text-center">{day}</span>
-                  {dayData.map((timeSlot) => (
-                    <span key={timeSlot.TimeTable.id} className="py-2 px-4 align-middle text-center">
-                      {timeSlot.Subject.subjectName}
-                    </span>
-                  ))}
-                </div>
+                <TabsContent key={day} value={day}>
+                  <Table>
+                    <TableCaption className="mb-4">timetable for {day}</TableCaption>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Start time</TableHead>
+                        <TableHead>End time</TableHead>
+                        <TableHead>Subject</TableHead>
+                        <TableHead>Subject code</TableHead>
+                        <TableHead>IsLab?</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {dayData.map((timeSlot) => (
+                        <TableRow key={timeSlot.TimeTable.id}>
+                          <TableCell>{timeSlot.TimeTable.startTime}</TableCell>
+                          <TableCell>{timeSlot.TimeTable.endTime}</TableCell>
+                          <TableCell>{timeSlot.Subject.subjectName}</TableCell>
+                          <TableCell>{timeSlot.Subject.subjectCode}</TableCell>
+                          <TableCell>
+                            {timeSlot.Subject.hasLab ? "Yes" : "No"}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TabsContent>
               ))}
-            </div>
+            </Tabs>
           </div>
         ))}
     </>

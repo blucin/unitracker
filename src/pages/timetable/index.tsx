@@ -20,9 +20,9 @@ const Timetable: NextPageWithLayout = () => {
   return (
     <>
       <div className="space-y-2">
-        <h1 className="scroll-m-20 text-4xl font-bold tracking-tight">
+        <h2 className="text-2xl font-bold tracking-tight">
           Timetables
-        </h1>
+        </h2>
         <p className="text-lg text-muted-foreground">
           <Balancer>View your timetable here.</Balancer>
         </p>
