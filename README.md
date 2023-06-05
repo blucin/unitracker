@@ -1,6 +1,6 @@
-# [WIP] Attendance Management System
+# [WIP] UniTrackr
 
-Full stack attendance management system built with Next.js, NextAuth.js, Prisma, Tailwind CSS and tRPC, with planetscale as the database. Shadcn ui is used for the UI components.
+Full stack attendance management solution for a single user as of now, built with Next.js, NextAuth.js, Prisma, Tailwind CSS and tRPC, with planetscale as the database. Shadcn ui is used for the UI components.
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
