@@ -29,14 +29,14 @@ export function TimeTable({ ...props }: TimeTableProps) {
               <TabsList>
                 {Object.entries(timetable).map(([day, dayData]) => (
                   <TabsTrigger key={day} value={day}>
-                    {day}
+                    {day==="Thursday" ? day.slice(0, 4) : day.slice(0, 3)}
                   </TabsTrigger>
                 ))}
               </TabsList>
               {Object.entries(timetable).map(([day, dayData]) => (
                 <TabsContent key={day} value={day}>
                   <Table>
-                    <TableCaption className="mb-4">timetable for {day}</TableCaption>
+                    <TableCaption className="mb-4">Timetable for {day}</TableCaption>
                     <TableHeader>
                       <TableRow>
                         <TableHead>Start time</TableHead>
