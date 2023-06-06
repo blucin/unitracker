@@ -1,5 +1,5 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, uniqueIndex, index, varchar, text, int, date, datetime, tinyint, mysqlEnum, time } from "drizzle-orm/mysql-core"
-import { InferModel, sql } from "drizzle-orm"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, uniqueIndex, index, varchar, text, int, date, tinyint, datetime, mysqlEnum, time } from "drizzle-orm/mysql-core"
+import { sql } from "drizzle-orm"
 
 
 export const account = mysqlTable("Account", {
@@ -40,9 +40,19 @@ export const attendance = mysqlTable("Attendance", {
 
 export const holidays = mysqlTable("Holidays", {
 	id: varchar("id", { length: 191 }).primaryKey().notNull(),
-	date: datetime("date", { mode: 'string', fsp: 3 }).notNull(),
 	holiday: varchar("holiday", { length: 191 }).notNull(),
 	isWeekend: tinyint("isWeekend").default(0).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	endDate: date("endDate", { mode: 'string' }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	startDate: date("startDate", { mode: 'string' }).notNull(),
+	userId: varchar("userId", { length: 191 }).notNull(),
+},
+(table) => {
+	return {
+		startDateEndDateHolidayKey: uniqueIndex("Holidays_startDate_endDate_holiday_key").on(table.startDate, table.endDate, table.holiday),
+		userIdIdx: index("Holidays_userId_idx").on(table.userId),
+	}
 });
 
 export const session = mysqlTable("Session", {
@@ -114,12 +124,3 @@ export const verificationToken = mysqlTable("VerificationToken", {
 		identifierTokenKey: uniqueIndex("VerificationToken_identifier_token_key").on(table.identifier, table.token),
 	}
 });
-
-export type TimeTable = InferModel<typeof timeTable>;
-export type Subject = InferModel<typeof subject>;
-export type Session = InferModel<typeof session>;
-export type Holidays = InferModel<typeof holidays>;
-export type Attendance = InferModel<typeof attendance>;
-export type Account = InferModel<typeof account>;
-export type User = InferModel<typeof user>;
-export type VerificationToken = InferModel<typeof verificationToken>;
