@@ -32,7 +32,7 @@ export const navConfig: NavConfig = {
           href: "/subject/create",
         },
         {
-          title: "View Subject",
+          title: "View/Edit Subject",
           items: [],
           href: "/subject",
         },
@@ -47,9 +47,24 @@ export const navConfig: NavConfig = {
           href: "/timetable/create",
         },
         {
-          title: "Edit Timetable",
+          title: "View/Edit Timetable",
           items: [],
           href: "/timetable",
+        },
+      ],
+    },
+    {
+      title: "Exceptions",
+      items: [
+        {
+          title: "Create Exceptions",
+          items: [],
+          href: "/exception/create",
+        },
+        {
+          title: "View/Edit Exceptions",
+          items: [],
+          href: "/exception",
         },
       ],
     },
