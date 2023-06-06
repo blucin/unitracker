@@ -3,6 +3,7 @@ import { attendanceRouter } from "./routers/attendance";
 import { subjectRouter } from "./routers/subject";
 import { timeTableRouter } from "./routers/timetable";
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import { exceptionRouter } from "./routers/exception";
 
 
 /**
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   attendance: attendanceRouter,
   subject: subjectRouter,
   timetable: timeTableRouter,
+  exception: exceptionRouter,
 });
 
 // export type definition of API
