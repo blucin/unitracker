@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ChevronsDown, ChevronsUp } from "lucide-react";
+import { Card as TremorCard, Title, BarChart, BadgeDelta, Text, Flex, ProgressBar } from "@tremor/react";
 
 const Dashboard: NextPageWithLayout = () => {
   useSession({
@@ -23,6 +24,41 @@ const Dashboard: NextPageWithLayout = () => {
       return { redirectTo: "/login" };
     },
   });
+
+  const exampleSubjectTheorydata = [
+    {
+      name: "Maths",
+      "Attendance %": 100,
+    },
+    {
+      name: "Chemistry",
+      "Attendance %": 90,
+    },
+    {
+      name: "Biology",
+      "Attendance %": 35,
+    },
+    {
+      name: "Physics",
+      "Attendance %": 50,
+    },
+  ];
+
+  const exampleSubjectLabdata = [
+    {
+      name: "Chemistry",
+      "Attendance %": 75,
+    },
+    {
+      name: "Biology",
+      "Attendance %": 50,
+    },
+    {
+      name: "Physics",
+      "Attendance %": 98,
+    },
+  ];
+
   return (
     <>
       <div className="justify-between lg:flex">
@@ -49,7 +85,7 @@ const Dashboard: NextPageWithLayout = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Top Theory</CardTitle>
-            <ChevronsUp className="h-4 w-4 text-muted-foreground" />
+            <BadgeDelta deltaType="increase"></BadgeDelta>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Maths</div>
@@ -62,7 +98,7 @@ const Dashboard: NextPageWithLayout = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Top Lab</CardTitle>
-            <ChevronsUp className="h-4 w-4 text-muted-foreground" />
+            <BadgeDelta deltaType="increase"></BadgeDelta>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Chemistry</div>
@@ -75,7 +111,7 @@ const Dashboard: NextPageWithLayout = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Least Theory</CardTitle>
-            <ChevronsDown className="h-4 w-4 text-muted-foreground" />
+            <BadgeDelta deltaType="decrease"></BadgeDelta>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Biology</div>
@@ -88,7 +124,7 @@ const Dashboard: NextPageWithLayout = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Least Lab</CardTitle>
-            <ChevronsDown className="h-4 w-4 text-muted-foreground" />
+            <BadgeDelta deltaType="decrease"></BadgeDelta>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">Physics</div>
@@ -98,6 +134,34 @@ const Dashboard: NextPageWithLayout = () => {
           </CardContent>
         </Card>
       </div>
+
+      
+        <TremorCard className="my-4">
+          <Title>Subject: Theories</Title>
+          {exampleSubjectTheorydata.map((subject) => ( 
+            <div key={subject.name} className="space-y-2 mt-4">
+            <Flex>
+              <Text>{subject.name}</Text>
+              <Text>{`${subject["Attendance %"]}%`}</Text>
+            </Flex>
+            <ProgressBar value={subject["Attendance %"]} />
+          </div>
+          ))}
+        </TremorCard>
+
+        <TremorCard className="my-4">
+          <Title>Subject: Lab</Title>
+          {exampleSubjectLabdata.map((subject) => ( 
+            <div key={subject.name} className="space-y-2 mt-4">
+            <Flex>
+              <Text>{subject.name}</Text>
+              <Text>{`${subject["Attendance %"]}%`}</Text>
+            </Flex>
+            <ProgressBar value={subject["Attendance %"]} />
+          </div>
+          ))}
+        </TremorCard>
+
     </>
   );
 };
