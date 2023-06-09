@@ -15,7 +15,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ChevronsDown, ChevronsUp } from "lucide-react";
-import { Card as TremorCard, Title, BarChart, BadgeDelta, Text, Flex, ProgressBar } from "@tremor/react";
+import {
+  Card as TremorCard,
+  Title,
+  BarChart,
+  BadgeDelta,
+  Text,
+  Flex,
+  ProgressBar,
+} from "@tremor/react";
 
 const Dashboard: NextPageWithLayout = () => {
   useSession({
@@ -81,87 +89,87 @@ const Dashboard: NextPageWithLayout = () => {
 
       <Separator className="mb-4" />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Top Theory</CardTitle>
-            <BadgeDelta deltaType="increase"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Maths</div>
-            <p className="text-xs text-muted-foreground">
-              +20.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Top Lab</CardTitle>
-            <BadgeDelta deltaType="increase"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Chemistry</div>
-            <p className="text-xs text-muted-foreground">
-              +45.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Least Theory</CardTitle>
-            <BadgeDelta deltaType="decrease"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Biology</div>
-            <p className="text-xs text-muted-foreground">
-              -23.2% from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Least Lab</CardTitle>
-            <BadgeDelta deltaType="decrease"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">Physics</div>
-            <p className="text-xs text-muted-foreground">
-              -15.1% from last month
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      
-        <TremorCard className="my-4">
+      <div className="flex flex-col gap-4 md:grid grid-cols-4">
+        <TremorCard className="row-span-2 col-span-3 col-start-1 row-start-1">
           <Title>Subject: Theories</Title>
-          {exampleSubjectTheorydata.map((subject) => ( 
-            <div key={subject.name} className="space-y-2 mt-4">
-            <Flex>
-              <Text>{subject.name}</Text>
-              <Text>{`${subject["Attendance %"]}%`}</Text>
-            </Flex>
-            <ProgressBar value={subject["Attendance %"]} />
-          </div>
+          {exampleSubjectTheorydata.map((subject) => (
+            <div key={subject.name} className="mt-4 space-y-2">
+              <Flex>
+                <Text>{subject.name}</Text>
+                <Text>{`${subject["Attendance %"]}%`}</Text>
+              </Flex>
+              <ProgressBar value={subject["Attendance %"]} />
+            </div>
           ))}
         </TremorCard>
 
-        <TremorCard className="my-4">
+        <TremorCard className="row-span-2 col-span-3 col-start-1 row-start-3">
           <Title>Subject: Lab</Title>
-          {exampleSubjectLabdata.map((subject) => ( 
-            <div key={subject.name} className="space-y-2 mt-4">
-            <Flex>
-              <Text>{subject.name}</Text>
-              <Text>{`${subject["Attendance %"]}%`}</Text>
-            </Flex>
-            <ProgressBar value={subject["Attendance %"]} />
-          </div>
+          {exampleSubjectLabdata.map((subject) => (
+            <div key={subject.name} className="mt-4 space-y-2">
+              <Flex>
+                <Text>{subject.name}</Text>
+                <Text>{`${subject["Attendance %"]}%`}</Text>
+              </Flex>
+              <ProgressBar value={subject["Attendance %"]} />
+            </div>
           ))}
         </TremorCard>
 
+        <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Top Theory</CardTitle>
+              <BadgeDelta deltaType="increase"></BadgeDelta>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">Maths</div>
+              <p className="text-xs text-muted-foreground">
+                +20.1% from last month
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Top Lab</CardTitle>
+              <BadgeDelta deltaType="increase"></BadgeDelta>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">Chemistry</div>
+              <p className="text-xs text-muted-foreground">
+                +45.1% from last month
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Least Theory
+              </CardTitle>
+              <BadgeDelta deltaType="decrease"></BadgeDelta>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">Biology</div>
+              <p className="text-xs text-muted-foreground">
+                -23.2% from last month
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Least Lab</CardTitle>
+              <BadgeDelta deltaType="decrease"></BadgeDelta>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">Physics</div>
+              <p className="text-xs text-muted-foreground">
+                -15.1% from last month
+              </p>
+            </CardContent>
+          </Card>
+      </div>
     </>
   );
 };
