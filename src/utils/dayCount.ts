@@ -19,9 +19,9 @@ export function weekdayCount(startDate: Date, endDate: Date) {
     [Day.Saturday, 0],
   ]);
 
-  const dayCount = Math.ceil(Math.abs(endDate.valueOf() - startDate.valueOf()) / (1000 * 60 * 60 * 24))+1; 
+  const dayDiff = Math.ceil(Math.abs(endDate.valueOf() - startDate.valueOf()) / (1000 * 60 * 60 * 24)); 
 
-  for(let i=0; i<dayCount; i++) {
+  for(let i=0; i<dayDiff; i++) {
     const day = (startDate.getDay() + i) % 7;
     result.set(day, result.get(day)! + 1);
   }
