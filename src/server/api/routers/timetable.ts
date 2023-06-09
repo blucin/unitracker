@@ -1,6 +1,7 @@
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { subject, timeTable } from "~/drizzle/out/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { z } from "zod";
 import _ from "lodash";
 
 export const timeTableRouter = createTRPCRouter({
@@ -30,5 +31,22 @@ export const timeTableRouter = createTRPCRouter({
     }));
 
     return res2;
+  }),
+
+  getByTimetableId: protectedProcedure.input(
+    z.object({
+      timetableId: z.string(),
+    })
+  ).query(async ({ ctx, input }) => {
+    const _timeTable = await ctx.db
+      .select()
+      .from(timeTable)
+      .where(and(eq(timeTable.userId, ctx.session.user.id), eq(timeTable.id, input.timetableId)))
+      .innerJoin(subject, eq(timeTable.subjectId, subject.id))
+      .orderBy(timeTable.dayName);
+
+    console.log(_timeTable);
+
+    return _timeTable;
   }),
 });
