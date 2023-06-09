@@ -12,7 +12,7 @@ export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <div className="mr-4 hidden lg:flex">
+    <div className="mr hidden lg:flex">
       <Link href="/" className="mr-6 flex items-center space-x-2">
         <Database className="h-6 w-6" />
         <span className="hidden font-bold sm:inline-block">
