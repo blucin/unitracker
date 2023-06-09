@@ -10,12 +10,10 @@ import { Separator } from "@/components/ui/separator";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ChevronsDown, ChevronsUp } from "lucide-react";
-import { Card as TremorCard, Title, BarChart, BadgeDelta, Text, Flex, ProgressBar } from "@tremor/react";
+import { Card as TremorCard, Title, BadgeDelta, Flex, ProgressBar } from "@tremor/react";
 
 const Dashboard: NextPageWithLayout = () => {
   useSession({
