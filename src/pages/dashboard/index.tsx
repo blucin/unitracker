@@ -141,8 +141,8 @@ const Dashboard: NextPageWithLayout = () => {
           {exampleSubjectTheorydata.map((subject) => ( 
             <div key={subject.name} className="space-y-2 mt-4">
             <Flex>
-              <Text>{subject.name}</Text>
-              <Text>{`${subject["Attendance %"]}%`}</Text>
+              <p className="text-sm">{subject.name}</p>
+              <p className="text-sm">{`${subject["Attendance %"]}%`}</p>
             </Flex>
             <ProgressBar value={subject["Attendance %"]} />
           </div>
@@ -154,10 +154,10 @@ const Dashboard: NextPageWithLayout = () => {
           {exampleSubjectLabdata.map((subject) => ( 
             <div key={subject.name} className="space-y-2 mt-4">
             <Flex>
-              <Text>{subject.name}</Text>
-              <Text>{`${subject["Attendance %"]}%`}</Text>
+              <p className="text-sm">{subject.name}</p>
+              <p className="text-sm">{`${subject["Attendance %"]}%`}</p>
             </Flex>
-            <ProgressBar value={subject["Attendance %"]} />
+            <ProgressBar value={subject["Attendance %"]}/>
           </div>
           ))}
         </TremorCard>
