@@ -35,13 +35,13 @@ export const timeTableRouter = createTRPCRouter({
 
   getByTimetableId: protectedProcedure.input(
     z.object({
-      timetableId: z.string(),
+      timetableName: z.string(),
     })
   ).query(async ({ ctx, input }) => {
     const _timeTable = await ctx.db
       .select()
       .from(timeTable)
-      .where(and(eq(timeTable.userId, ctx.session.user.id), eq(timeTable.id, input.timetableId)))
+      .where(and(eq(timeTable.userId, ctx.session.user.id), eq(timeTable.id, input.timetableName)))
       .innerJoin(subject, eq(timeTable.subjectId, subject.id))
       .orderBy(timeTable.dayName);
 

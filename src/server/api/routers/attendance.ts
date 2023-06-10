@@ -1,25 +1,19 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { getByTimetableId } from "~/server/api/services/timetableService";
 
 export const attendanceRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.attendance.findMany();
-  }),
   getByRange: protectedProcedure
     .input(
       z.object({
-        start: z.date(),
-        end: z.date(),
+        startDate: z.date(),
+        endDate: z.date(),
+        timetableName: z.string(),
       })
     )
-    .query(({ ctx, input }) => {
-      return ctx.prisma.attendance.findMany({
-        where: {
-          date: {
-            gte: input.start,
-            lte: input.end,
-          },
-        },
-      });
+    .query(async ({ ctx, input }) => {
+      const timeTable = await getByTimetableId(ctx.db, input.timetableName, ctx.session.user.id);
+      console.log("TIMETABLE1:", timeTable);
+      return timeTable;
     }),
 });
