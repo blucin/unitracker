@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-//import { api } from "~/utils/api";
+import { api } from "~/utils/api";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from "~/pages/_app";
 import {
@@ -21,6 +21,12 @@ const Dashboard: NextPageWithLayout = () => {
     onUnauthenticated() {
       return { redirectTo: "/login" };
     },
+  });
+
+  const { data, isLoading } = api.attendance.getByRange.useQuery({
+    startDate: new Date("2021-09-01"),
+    endDate: new Date("2021-09-30"),
+    timetableName: "sem1"
   });
 
   const exampleSubjectTheorydata = [
