@@ -62,7 +62,9 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
     password: process.env["DATABASE_PASSWORD"],
   });
 
-  const db = drizzle(connection);
+  const db = drizzle(connection, {
+    logger: true,
+  });
 
   return {
     db,
