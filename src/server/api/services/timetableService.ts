@@ -1,6 +1,6 @@
 import { type PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless";
 import { timeTable, subject } from "~/drizzle/out/schema";
-import { type InferModel, sql, and, eq } from "drizzle-orm";
+import { sql, and, eq } from "drizzle-orm";
 import { weekdayCount } from "~/utils/weekDayCount";
 
 export function getByTimetableId(
