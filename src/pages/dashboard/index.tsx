@@ -18,6 +18,57 @@ import {
 import _ from "lodash";
 import type { RouterOutput } from "~/server/api/root";
 
+function calculateMinMaxAttendance(
+  data: RouterOutput["attendance"]["getByRange"] | undefined
+) {
+  // if there are multiple subjects with same attendance, return the last one
+  // if there are no subjects, return "-"
+  let theoryMaxName = "-";
+  let labMaxName = "-";
+  let theoryMinName = "-";
+  let labMinName = "-";
+  let theoryMax = 0;
+  let labMax = 0;
+  let theoryMin = 100;
+  let labMin = 100;
+
+  if (data) {
+    _.map(data.theory, (value, key) => {
+      if (value > theoryMax) {
+        theoryMax = value;
+        theoryMaxName = key;
+      }
+
+      if (value < theoryMin) {
+        theoryMin = value;
+        theoryMinName = key;
+      }
+    });
+
+    _.map(data.lab, (value, key) => {
+      if (value > labMax) {
+        labMax = value;
+        labMaxName = key;
+      }
+
+      if (value < labMin) {
+        labMin = value;
+        labMinName = key;
+      }
+    });
+  }
+  return {
+    theoryMaxName,
+    labMaxName,
+    theoryMinName,
+    labMinName,
+    theoryMax,
+    labMax,
+    theoryMin,
+    labMin,
+  };
+}
+
 const Dashboard: NextPageWithLayout = () => {
   useSession({
     required: true,
@@ -27,44 +78,21 @@ const Dashboard: NextPageWithLayout = () => {
   });
 
   const { data, isLoading } = api.attendance.getByRange.useQuery({
-    startDate: new Date("2021-09-01"),
-    endDate: new Date("2021-09-30"),
-    timetableName: "sem1"
+    startDate: new Date("2023-05-01"),
+    endDate: new Date("2023-05-06"),
+    timetableName: "sem1",
   });
 
-  const exampleSubjectTheorydata = [
-    {
-      name: "Maths",
-      "Attendance %": 100,
-    },
-    {
-      name: "Chemistry",
-      "Attendance %": 90,
-    },
-    {
-      name: "Biology",
-      "Attendance %": 35,
-    },
-    {
-      name: "Physics",
-      "Attendance %": 50,
-    },
-  ];
-
-  const exampleSubjectLabdata = [
-    {
-      name: "Chemistry",
-      "Attendance %": 75,
-    },
-    {
-      name: "Biology",
-      "Attendance %": 50,
-    },
-    {
-      name: "Physics",
-      "Attendance %": 98,
-    },
-  ];
+  const {
+    theoryMaxName,
+    labMaxName,
+    theoryMinName,
+    labMinName,
+    theoryMax,
+    labMax,
+    theoryMin,
+    labMin,
+  } = calculateMinMaxAttendance(data);
 
   return (
     <>
@@ -95,10 +123,8 @@ const Dashboard: NextPageWithLayout = () => {
             <BadgeDelta deltaType="increase"></BadgeDelta>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Maths</div>
-            <p className="text-xs text-muted-foreground">
-              +20.1% from last month
-            </p>
+            <div className="text-2xl font-bold">{theoryMaxName}</div>
+            <p className="text-xs text-muted-foreground">{theoryMax}%</p>
           </CardContent>
         </Card>
 
@@ -108,10 +134,8 @@ const Dashboard: NextPageWithLayout = () => {
             <BadgeDelta deltaType="increase"></BadgeDelta>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Chemistry</div>
-            <p className="text-xs text-muted-foreground">
-              +45.1% from last month
-            </p>
+            <div className="text-2xl font-bold">{labMaxName}</div>
+            <p className="text-xs text-muted-foreground">{labMax}%</p>
           </CardContent>
         </Card>
 
@@ -121,10 +145,8 @@ const Dashboard: NextPageWithLayout = () => {
             <BadgeDelta deltaType="decrease"></BadgeDelta>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Biology</div>
-            <p className="text-xs text-muted-foreground">
-              -23.2% from last month
-            </p>
+            <div className="text-2xl font-bold">{theoryMinName}</div>
+            <p className="text-xs text-muted-foreground">{theoryMin}%</p>
           </CardContent>
         </Card>
 
@@ -134,41 +156,37 @@ const Dashboard: NextPageWithLayout = () => {
             <BadgeDelta deltaType="decrease"></BadgeDelta>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Physics</div>
-            <p className="text-xs text-muted-foreground">
-              -15.1% from last month
-            </p>
+            <div className="text-2xl font-bold">{labMinName}</div>
+            <p className="text-xs text-muted-foreground">{labMin}%</p>
           </CardContent>
         </Card>
       </div>
 
-      
-        <TremorCard className="my-4">
-          <Title>Subject: Theories</Title>
-          {exampleSubjectTheorydata.map((subject) => ( 
-            <div key={subject.name} className="space-y-2 mt-4">
+      <TremorCard className="my-4">
+        <Title>Subject: Theories</Title>
+        {_.map(data?.theory, (value, key) => (
+          <div key={key} className="mt-4 space-y-2">
             <Flex>
-              <p className="text-sm">{subject.name}</p>
-              <p className="text-sm">{`${subject["Attendance %"]}%`}</p>
+              <p className="text-sm">{key}</p>
+              <p className="text-sm">{`${value}%`}</p>
             </Flex>
-            <ProgressBar value={subject["Attendance %"]} />
+            <ProgressBar value={value} />
           </div>
-          ))}
-        </TremorCard>
+        ))}
+      </TremorCard>
 
-        <TremorCard className="my-4">
-          <Title>Subject: Lab</Title>
-          {exampleSubjectLabdata.map((subject) => ( 
-            <div key={subject.name} className="space-y-2 mt-4">
+      <TremorCard className="my-4">
+        <Title>Subject: Lab</Title>
+        {_.map(data?.lab, (value, key) => (
+          <div key={key} className="mt-4 space-y-2">
             <Flex>
-              <p className="text-sm">{subject.name}</p>
-              <p className="text-sm">{`${subject["Attendance %"]}%`}</p>
+              <p className="text-sm">{key}</p>
+              <p className="text-sm">{`${value}%`}</p>
             </Flex>
-            <ProgressBar value={subject["Attendance %"]}/>
+            <ProgressBar value={value} />
           </div>
-          ))}
-        </TremorCard>
-
+        ))}
+      </TremorCard>
     </>
   );
 };
