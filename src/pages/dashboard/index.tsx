@@ -7,13 +7,16 @@ import {
   TimeTableSelector,
 } from "@/components/DashboardComponents";
 import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Card as TremorCard, Title, BadgeDelta, Flex, ProgressBar } from "@tremor/react";
+  Card as TremorCard,
+  Title,
+  BadgeDelta,
+  Flex,
+  ProgressBar,
+} from "@tremor/react";
+import _ from "lodash";
+import type { RouterOutput } from "~/server/api/root";
 
 const Dashboard: NextPageWithLayout = () => {
   useSession({
