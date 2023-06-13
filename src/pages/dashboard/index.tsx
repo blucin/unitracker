@@ -5,17 +5,10 @@ import type { NextPageWithLayout } from "~/pages/_app";
 import {
   CalendarDateRangePicker,
   TimeTableSelector,
+  DashboardAttendanceCard,
+  DashboardAttendanceMinMaxCard,
 } from "@/components/DashboardComponents";
 import { Separator } from "@/components/ui/separator";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Card as TremorCard,
-  Title,
-  BadgeDelta,
-  Flex,
-  ProgressBar,
-} from "@tremor/react";
-import _ from "lodash";
 import { calculateMinMaxAttendance } from "~/utils/minMaxAttendance";
 
 const Dashboard: NextPageWithLayout = () => {
@@ -66,76 +59,44 @@ const Dashboard: NextPageWithLayout = () => {
       <Separator className="mb-4" />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Top Theory</CardTitle>
-            <BadgeDelta deltaType="increase"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{theoryMaxName}</div>
-            <p className="text-xs text-muted-foreground">{theoryMax}%</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Top Lab</CardTitle>
-            <BadgeDelta deltaType="increase"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{labMaxName}</div>
-            <p className="text-xs text-muted-foreground">{labMax}%</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Least Theory</CardTitle>
-            <BadgeDelta deltaType="decrease"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{theoryMinName}</div>
-            <p className="text-xs text-muted-foreground">{theoryMin}%</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Least Lab</CardTitle>
-            <BadgeDelta deltaType="decrease"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{labMinName}</div>
-            <p className="text-xs text-muted-foreground">{labMin}%</p>
-          </CardContent>
-        </Card>
+        <DashboardAttendanceMinMaxCard
+          cardTitle="Top Theory"
+          subjectName={theoryMaxName}
+          attendance={theoryMax}
+          deltaType="increase"
+        />
+        <DashboardAttendanceMinMaxCard
+          cardTitle="Top Lab"
+          subjectName={labMaxName}
+          attendance={labMax}
+          deltaType="increase"
+        />
+        <DashboardAttendanceMinMaxCard
+          cardTitle="Bottom Theory"
+          subjectName={theoryMinName}
+          attendance={theoryMin}
+          deltaType="decrease"
+        />
+        <DashboardAttendanceMinMaxCard
+          cardTitle="Bottom Lab"
+          subjectName={labMinName}
+          attendance={labMin}
+          deltaType="decrease"
+        />
       </div>
 
-      <TremorCard className="my-4">
-        <Title>Subject: Theories</Title>
-        {_.map(data?.theory, (value, key) => (
-          <div key={key} className="mt-4 space-y-2">
-            <Flex>
-              <p className="text-sm">{key}</p>
-              <p className="text-sm">{`${value}%`}</p>
-            </Flex>
-            <ProgressBar value={value} />
-          </div>
-        ))}
-      </TremorCard>
-
-      <TremorCard className="my-4">
-        <Title>Subject: Lab</Title>
-        {_.map(data?.lab, (value, key) => (
-          <div key={key} className="mt-4 space-y-2">
-            <Flex>
-              <p className="text-sm">{key}</p>
-              <p className="text-sm">{`${value}%`}</p>
-            </Flex>
-            <ProgressBar value={value} />
-          </div>
-        ))}
-      </TremorCard>
+      <DashboardAttendanceCard
+        className="my-4"
+        data={data}
+        title={"Subject: Theories"}
+        isLab={false}
+      />
+      <DashboardAttendanceCard
+        className="my-4"
+        data={data}
+        title={"Subject: Labs"}
+        isLab={true}
+      />
     </>
   );
 };

@@ -24,6 +24,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// attendance cards % by each subject
+import { Card as TremorCard, Title, Flex, ProgressBar } from "@tremor/react";
+import type { RouterOutput } from "~/server/api/root";
+import _ from "lodash";
+
+// min max attendance cards
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BadgeDelta } from "@tremor/react";
+
+// date range picker
 export function CalendarDateRangePicker({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
@@ -78,12 +88,13 @@ export function CalendarDateRangePicker({
   );
 }
 
+// timetable selector
 export function TimeTableSelector({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <Select>
-      <SelectTrigger className="w-[240px] h-9">
+      <SelectTrigger className="h-9 w-[240px]">
         <SelectValue placeholder="Timetable" />
       </SelectTrigger>
       <SelectContent>
@@ -92,5 +103,63 @@ export function TimeTableSelector({
         <SelectItem value="system">System</SelectItem>
       </SelectContent>
     </Select>
+  );
+}
+
+// attendance cards containing % attendance
+type DashboardAttendanceCardProps = {
+  className?: string;
+  data: RouterOutput["attendance"]["getByRange"] | undefined;
+  title: string;
+  isLab: boolean;
+};
+
+export function DashboardAttendanceCard({
+  ...props
+}: DashboardAttendanceCardProps) {
+  return (
+    <TremorCard className={props.className}>
+      <Title>{props.title}</Title>
+      {_.map(
+        props.isLab ? props.data?.lab : props.data?.theory,
+        (value, key) => {
+          return (
+            <div key={key} className="mt-4 space-y-2">
+              <Flex>
+                <p className="text-sm">{key}</p>
+                <p className="text-sm">{`${value}%`}</p>
+              </Flex>
+              <ProgressBar value={value} />
+            </div>
+          );
+        }
+      )}
+    </TremorCard>
+  );
+}
+
+// attendance min max cards for theory and lab
+type DashboardAttendanceMinMaxCardProps = {
+  className?: string;
+  cardTitle: string;
+  subjectName: string;
+  attendance: number;
+  deltaType: "increase" | "decrease";
+};
+
+export function DashboardAttendanceMinMaxCard({
+  ...props
+}: DashboardAttendanceMinMaxCardProps) {
+  return (
+    <Card className={props.className}>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{props.cardTitle}</CardTitle>
+        <BadgeDelta deltaType={props.deltaType}></BadgeDelta>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{props.subjectName}</div>
+        <p className="text-xs text-muted-foreground">{`${props.attendance}%`}</p>
+      </CardContent>
+    </Card>
   );
 }
