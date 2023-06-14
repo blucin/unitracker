@@ -22,12 +22,6 @@ enum DayEnum {
   Sunday
 }
 
-enum AttendanceEnum {
-  Present
-  Absent
-  Leave
-}
-
 // Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
@@ -69,6 +63,7 @@ model User {
   Subject       Subject[]
   TimeTable     TimeTable[]
   Attendance    Attendance[]
+  Holidays      Holidays[]
 }
 
 model VerificationToken {
@@ -111,13 +106,12 @@ model TimeTable {
 }
 
 model Attendance {
-  id          String         @id @default(cuid())
-  timetable   TimeTable      @relation(fields: [timetableId], references: [id])
+  id          String    @id @default(cuid())
+  timetable   TimeTable @relation(fields: [timetableId], references: [id])
   timetableId String
-  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String
-  date        DateTime
-  status      AttendanceEnum
+  date        DateTime  @db.Date
 
   @@unique([timetableId, userId, date])
   @@index([timetableId])
@@ -126,7 +120,13 @@ model Attendance {
 
 model Holidays {
   id        String   @id @default(cuid())
-  date      DateTime
+  startDate DateTime @db.Date
+  endDate   DateTime @db.Date
   holiday   String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
   isWeekend Boolean  @default(false)
+
+  @@unique([startDate, endDate, holiday])
+  @@index([userId])
 }

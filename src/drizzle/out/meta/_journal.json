@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1685792868118,
+      "tag": "0000_thankful_kitty_pryde",
+      "breakpoints": false
+    }
+  ]
+}
