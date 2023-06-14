@@ -3,6 +3,20 @@ import { timeTable, subject } from "~/drizzle/out/schema";
 import { sql, and, eq } from "drizzle-orm";
 import { weekdayCount } from "~/utils/weekDayCount";
 
+export function getAllTimetableNameAndId(
+  db: PlanetScaleDatabase,
+  userId: string
+) {
+  return db
+    .select({
+      timeTableId: timeTable.id,
+      timeTableName: timeTable.timetableName,
+    })
+    .from(timeTable)
+    .where(eq(timeTable.userId, userId))
+    .orderBy(timeTable.timetableName);
+}
+
 export function getByTimetableId(
   db: PlanetScaleDatabase,
   timetableName: string,
@@ -39,13 +53,27 @@ export function getSubjectCountByDateRange(
       isLab: timeTable.isLab,
       count: sql<number>`
         CASE 
-          WHEN TimeTable.dayName = 'Sunday' THEN COUNT(*) * ${dayCountByWeekday.get("Sunday")}
-          WHEN TimeTable.dayName = 'Monday' THEN COUNT(*) * ${dayCountByWeekday.get("Monday")}
-          WHEN TimeTable.dayName = 'Tuesday' THEN COUNT(*) * ${dayCountByWeekday.get("Tuesday")}
-          WHEN TimeTable.dayName = 'Wednesday' THEN COUNT(*) * ${dayCountByWeekday.get("Wednesday")}
-          WHEN TimeTable.dayName = 'Thursday' THEN COUNT(*) * ${dayCountByWeekday.get("Thursday")}
-          WHEN TimeTable.dayName = 'Friday' THEN COUNT(*) * ${dayCountByWeekday.get("Friday")}
-          WHEN TimeTable.dayName = 'Saturday' THEN COUNT(*) * ${dayCountByWeekday.get("Saturday")}
+          WHEN TimeTable.dayName = 'Sunday' THEN COUNT(*) * ${dayCountByWeekday.get(
+            "Sunday"
+          )}
+          WHEN TimeTable.dayName = 'Monday' THEN COUNT(*) * ${dayCountByWeekday.get(
+            "Monday"
+          )}
+          WHEN TimeTable.dayName = 'Tuesday' THEN COUNT(*) * ${dayCountByWeekday.get(
+            "Tuesday"
+          )}
+          WHEN TimeTable.dayName = 'Wednesday' THEN COUNT(*) * ${dayCountByWeekday.get(
+            "Wednesday"
+          )}
+          WHEN TimeTable.dayName = 'Thursday' THEN COUNT(*) * ${dayCountByWeekday.get(
+            "Thursday"
+          )}
+          WHEN TimeTable.dayName = 'Friday' THEN COUNT(*) * ${dayCountByWeekday.get(
+            "Friday"
+          )}
+          WHEN TimeTable.dayName = 'Saturday' THEN COUNT(*) * ${dayCountByWeekday.get(
+            "Saturday"
+          )}
         END AS count`,
     })
     .from(timeTable)
@@ -57,11 +85,14 @@ export function getSubjectCountByDateRange(
       )
     )
     .groupBy(subject.subjectName, timeTable.isLab, timeTable.dayName)
-    .as('sq');
+    .as("sq");
 
-  return db.select({
-    subjectName: sq.subjectName,
-    isLab: sq.isLab,
-    count: sql<number>`SUM(sq.count)`,
-  }).from(sq).groupBy(sq.subjectName, sq.isLab);
+  return db
+    .select({
+      subjectName: sq.subjectName,
+      isLab: sq.isLab,
+      count: sql<number>`SUM(sq.count)`,
+    })
+    .from(sq)
+    .groupBy(sq.subjectName, sq.isLab);
 }
