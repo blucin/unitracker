@@ -9,9 +9,11 @@ import { MainNav } from "@/components/Main-Nav";
 import { MobileNav } from "@/components/Mobile-Nav";
 import { ModeToggle } from "@/components/ModeToggler";
 
-export function SiteHeader() {
+export function SiteHeader({
+  className,
+}: React.HTMLAttributes<HTMLElement>) {
   return (
-    <header className="supports-backdrop-blur:bg-background/60 sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur">
+    <header className={cn("supports-backdrop-blur:bg-background/60 bg-background/95 backdrop-blur", className)}>
       <div className="flex h-14 items-center px-4 lg:px-8">
         <MainNav />
         <MobileNav />
