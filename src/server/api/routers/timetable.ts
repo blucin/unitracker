@@ -3,7 +3,7 @@ import { subject, timeTable } from "~/drizzle/out/schema";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import _ from "lodash";
-import { getAllTimetableNameAndId } from "~/server/api/services/timetableService"
+import { getAllTimetableNames } from "~/server/api/services/timetableService"
 
 export const timeTableRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
@@ -52,7 +52,7 @@ export const timeTableRouter = createTRPCRouter({
   }),
 
   getAllTimetableName: protectedProcedure.query(async ({ ctx }) => { 
-    const timeTables = await getAllTimetableNameAndId(ctx.db, ctx.session.user.id);
+    const timeTables = await getAllTimetableNames(ctx.db, ctx.session.user.id);
     return timeTables;
   }),
 });
