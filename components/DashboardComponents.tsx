@@ -1,21 +1,32 @@
 "use client";
 
 import * as React from "react";
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// form
 import { addDays, format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { type DateRange } from "react-day-picker";
-import { useStore } from "~/store/store";
-
+import useStore from "~/store/store";
 import { cn } from "~/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
-// timetable selector
 import {
   Select,
   SelectContent,
@@ -33,76 +44,128 @@ import _ from "lodash";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BadgeDelta } from "@tremor/react";
 
-// date range picker
-export function CalendarDateRangePicker({
-  className,
-}: React.HTMLAttributes<HTMLDivElement>) {
+// date range picker and timetable form
+type DashboardDateTimetableFormProps = {
+  timeTableNames: RouterOutput["timetable"]["getAllTimetableName"] | undefined;
+};
+
+const FormSchema = z.object({
+  date: z.object({
+    from: z.date(),
+    to: z.date(),
+  }),
+  timetableName: z.string(),
+});
+
+export function DashboardDateTimetableForm({
+  ...props
+}: DashboardDateTimetableFormProps) {
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(2023, 0, 20),
     to: addDays(new Date(2023, 0, 20), 20),
   });
 
-  const dateRange = useStore((state) => state.dateRange);
-  const setDateRange = useStore((state) => state.setDateRange);
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+  });
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log("FORM DATA", data);
+  }
 
   return (
-    <div className={cn("grid gap-2", className)}>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant={"outline"}
-            size="sm"
-            className={cn(
-              "w-[240px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
-            )}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
-                <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
-                </>
-              ) : (
-                format(date.from, "LLL dd, y")
-              )
-            ) : (
-              <span>Pick a date</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
-            numberOfMonths={2}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
-  );
-}
-
-// timetable selector
-export function TimeTableSelector({
-  className,
-}: React.HTMLAttributes<HTMLDivElement>) {
-  return (
-    <Select>
-      <SelectTrigger className="h-9 w-[240px]">
-        <SelectValue placeholder="Timetable" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="light">Light</SelectItem>
-        <SelectItem value="dark">Dark</SelectItem>
-        <SelectItem value="system">System</SelectItem>
-      </SelectContent>
-    </Select>
+    <Form {...form}>
+      <form className="gap-4 lg:flex items-center" onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name="date"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="lg:hidden">Select date range:</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <FormControl>
+                    <Button
+                      id="date"
+                      variant={"outline"}
+                      size="sm"
+                      className={cn(
+                        "w-[240px] justify-start text-left font-normal",
+                        !field.value && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {field.value?.from ? (
+                        field.value.to ? (
+                          <>
+                            {format(field.value.from, "LLL dd, y")} -{" "}
+                            {format(field.value.to, "LLL dd, y")}
+                          </>
+                        ) : (
+                          format(field.value.from, "LLL dd, y")
+                        )
+                      ) : (
+                        <span>Pick a date</span>
+                      )}
+                    </Button>
+                  </FormControl>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="end">
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={field.value?.from}
+                    selected={field.value}
+                    onSelect={field.onChange}
+                    numberOfMonths={2}
+                  />
+                </PopoverContent>
+              </Popover>
+              <FormDescription className="lg:hidden">
+                The date range to calculate attendance for
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="timetableName"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="lg:hidden">Timetable:</FormLabel>
+              <Select onValueChange={field.onChange}>
+                <FormControl>
+                  <SelectTrigger className="h-9 w-[240px]">
+                    <SelectValue placeholder="Timetable" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {props.timeTableNames === undefined ? (
+                    <></>
+                  ) : (
+                    props.timeTableNames.map((value, index) => {
+                      return (
+                        <SelectItem key={index} value={value.timeTableName}>
+                          {value.timeTableName}
+                        </SelectItem>
+                      );
+                    })
+                  )}
+                </SelectContent>
+              </Select>
+              <FormDescription className="lg:hidden">
+                Calculation will be based of the timetable selected{" "}
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button className="my-5 h-9 lg:my-0" type="submit">
+          Retrieve
+        </Button>
+      </form>
+    </Form>
   );
 }
 
