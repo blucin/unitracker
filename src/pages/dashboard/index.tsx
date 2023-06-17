@@ -3,13 +3,16 @@ import { api } from "~/utils/api";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from "~/pages/_app";
 import {
-  CalendarDateRangePicker,
-  TimeTableSelector,
+  DashboardDateTimetableForm,
   DashboardAttendanceCard,
   DashboardAttendanceMinMaxCard,
 } from "@/components/DashboardComponents";
 import { Separator } from "@/components/ui/separator";
 import { calculateMinMaxAttendance } from "~/utils/minMaxAttendance";
+
+// use loading table as loading dashboard for now
+import { LoadingTable } from "@/components/LoadingTable";
+import useStore from "~/store/store";
 
 const Dashboard: NextPageWithLayout = () => {
   useSession({
@@ -19,11 +22,17 @@ const Dashboard: NextPageWithLayout = () => {
     },
   });
 
+  /*
   const { data, isLoading } = api.attendance.getByRange.useQuery({
     startDate: new Date("2023-05-01"),
     endDate: new Date("2023-05-06"),
     timetableName: "sem1",
   });
+  */
+
+  const attendanceData = useStore((state) => state.attendanceData);
+  const isLoading = useStore((state) => state.isLoading);
+  const timeTableNames = api.timetable.getAllTimetableName.useQuery().data;
 
   const {
     theoryMaxName,
@@ -34,69 +43,62 @@ const Dashboard: NextPageWithLayout = () => {
     labMax,
     theoryMin,
     labMin,
-  } = calculateMinMaxAttendance(data);
+  } = calculateMinMaxAttendance(attendanceData);
 
   return (
     <>
-      <div className="justify-between lg:flex">
+      <div className="justify-between items-center lg:flex">
         <h2 className="mb-5 text-2xl font-bold tracking-tight"> Dashboard </h2>
-        <div className="gap-4 lg:flex">
-          <div className="my-5 lg:my-0">
-            <p className="my-3 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 lg:hidden">
-              Select date range:{" "}
-            </p>
-            <CalendarDateRangePicker />
-          </div>
-          <div className="my-5 lg:my-0">
-            <p className="my-3 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 lg:hidden">
-              Select your timetable:{" "}
-            </p>
-            <TimeTableSelector />
-          </div>
-        </div>
+        <DashboardDateTimetableForm timeTableNames={timeTableNames} />
       </div>
 
       <Separator className="mb-4" />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <DashboardAttendanceMinMaxCard
-          cardTitle="Top Theory"
-          subjectName={theoryMaxName}
-          attendance={theoryMax}
-          deltaType="increase"
-        />
-        <DashboardAttendanceMinMaxCard
-          cardTitle="Top Lab"
-          subjectName={labMaxName}
-          attendance={labMax}
-          deltaType="increase"
-        />
-        <DashboardAttendanceMinMaxCard
-          cardTitle="Bottom Theory"
-          subjectName={theoryMinName}
-          attendance={theoryMin}
-          deltaType="decrease"
-        />
-        <DashboardAttendanceMinMaxCard
-          cardTitle="Bottom Lab"
-          subjectName={labMinName}
-          attendance={labMin}
-          deltaType="decrease"
-        />
-      </div>
+      {attendanceData === undefined ? (
+        <p>select date range and timetable</p>
+      ) : (
+        <>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <DashboardAttendanceMinMaxCard
+              cardTitle="Top Theory"
+              subjectName={theoryMaxName}
+              attendance={theoryMax}
+              deltaType="increase"
+            />
+            <DashboardAttendanceMinMaxCard
+              cardTitle="Top Lab"
+              subjectName={labMaxName}
+              attendance={labMax}
+              deltaType="increase"
+            />
+            <DashboardAttendanceMinMaxCard
+              cardTitle="Bottom Theory"
+              subjectName={theoryMinName}
+              attendance={theoryMin}
+              deltaType="decrease"
+            />
+            <DashboardAttendanceMinMaxCard
+              cardTitle="Bottom Lab"
+              subjectName={labMinName}
+              attendance={labMin}
+              deltaType="decrease"
+            />
+          </div>
 
-      <DashboardAttendanceCard
-        className="my-4"
-        data={data}
-        title={"Subject: Theories"}
-        isLab={false}
-      />
-      <DashboardAttendanceCard
-        className="my-4"
-        data={data}
-        title={"Subject: Labs"}
-        isLab={true}
-      />
+          <DashboardAttendanceCard
+            className="my-4"
+            data={attendanceData}
+            title={"Subject: Theories"}
+            isLab={false}
+          />
+          <DashboardAttendanceCard
+            className="my-4"
+            data={attendanceData}
+            title={"Subject: Labs"}
+            isLab={true}
+          />
+        </>
+      )}
     </>
   );
 };
