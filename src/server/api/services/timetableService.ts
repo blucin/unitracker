@@ -3,14 +3,13 @@ import { timeTable, subject } from "~/drizzle/out/schema";
 import { sql, and, eq } from "drizzle-orm";
 import { weekdayCount } from "~/utils/weekDayCount";
 
-export function getAllTimetableNameAndId(
+export function getAllTimetableNames(
   db: PlanetScaleDatabase,
   userId: string
 ) {
   return db
     .select({
-      timeTableId: timeTable.id,
-      timeTableName: timeTable.timetableName,
+      timeTableName: sql<string>`DISTINCT ${timeTable.timetableName}`,
     })
     .from(timeTable)
     .where(eq(timeTable.userId, userId))
