@@ -1,3 +1,5 @@
+import { Flashlight } from "lucide-react";
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require("path");
 
@@ -29,6 +31,7 @@ const config = {
       },
     ],
     "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+    "@typescript-eslint/no-misused-promises": "warn",
     "@typescript-eslint/no-empty-interface": [
       "error",
       {
