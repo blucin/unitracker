@@ -47,7 +47,7 @@ const Dashboard: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="justify-between items-center lg:flex">
+      <div className="justify-between items-start lg:flex">
         <h2 className="mb-5 text-2xl font-bold tracking-tight"> Dashboard </h2>
         <DashboardDateTimetableForm timeTableNames={timeTableNames} />
       </div>
