@@ -75,12 +75,15 @@ export function DashboardDateTimetableForm({
 
   return (
     <Form {...form}>
-      <form className="gap-4 lg:flex items-center" onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        className="items-start gap-4 flex flex-col lg:flex-row"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <FormField
           control={form.control}
           name="date"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex flex-col lg:space-y-0">
               <FormLabel className="lg:hidden">Select date range:</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
@@ -121,10 +124,12 @@ export function DashboardDateTimetableForm({
                   />
                 </PopoverContent>
               </Popover>
-              <FormDescription className="lg:hidden">
-                The date range to calculate attendance for
-              </FormDescription>
-              <FormMessage />
+              <div className="flex gap-1">
+                <FormMessage/>
+                <FormDescription className="lg:hidden">
+                  The date range to calculate attendance for
+                </FormDescription>
+              </div>
             </FormItem>
           )}
         />
@@ -132,7 +137,7 @@ export function DashboardDateTimetableForm({
           control={form.control}
           name="timetableName"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="lg:space-y-0">
               <FormLabel className="lg:hidden">Timetable:</FormLabel>
               <Select onValueChange={field.onChange}>
                 <FormControl>
@@ -154,14 +159,16 @@ export function DashboardDateTimetableForm({
                   )}
                 </SelectContent>
               </Select>
-              <FormDescription className="lg:hidden">
-                Calculation will be based of the timetable selected{" "}
-              </FormDescription>
-              <FormMessage />
+              <div className="flex gap-1">
+                <FormMessage/>
+                <FormDescription className="lg:hidden">
+                  Calculation will be based of the timetable selected{" "}
+                </FormDescription>
+              </div>
             </FormItem>
           )}
         />
-        <Button className="my-5 h-9 lg:my-0" type="submit">
+        <Button className="h-[36px] mb-4 lg:mb-0" type="submit">
           Retrieve
         </Button>
       </form>
