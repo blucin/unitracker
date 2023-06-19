@@ -27,12 +27,12 @@ export const navConfig: NavConfig = {
       title: "Subjects",
       items: [
         {
-          title: "Create Subject",
+          title: "Add Subject",
           items: [],
           href: "/subject/create",
         },
         {
-          title: "View/Edit Subject",
+          title: "Edit Subject",
           items: [],
           href: "/subject",
         },
@@ -42,12 +42,12 @@ export const navConfig: NavConfig = {
       title: "Timetables",
       items: [
         {
-          title: "Create Timetable",
+          title: "Add Timetable",
           items: [],
           href: "/timetable/create",
         },
         {
-          title: "View/Edit Timetable",
+          title: "Edit Timetable",
           items: [],
           href: "/timetable",
         },
@@ -57,12 +57,12 @@ export const navConfig: NavConfig = {
       title: "Exceptions",
       items: [
         {
-          title: "Create Exceptions",
+          title: "Add Exceptions",
           items: [],
           href: "/exception/create",
         },
         {
-          title: "View/Edit Exceptions",
+          title: "Edit Exceptions",
           items: [],
           href: "/exception",
         },
