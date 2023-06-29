@@ -7,7 +7,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <SiteHeader className="sticky top-0 border-b w-full z-40" />
       <div className="grid grid-cols-6 items-start">
         <DashboardNavBar className="sticky top-14 border-r h-[calc(100dvh-3.5rem)]"/>
-        <main className="p-10 col-span-6 lg:col-span-5">{children}</main>
+        <main className="p-7 col-span-6 sm:p-10 lg:col-span-5">{children}</main>
       </div>
     </div>
   );
