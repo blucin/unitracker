@@ -2,6 +2,9 @@ import { type PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless";
 import { timeTable, subject } from "~/drizzle/out/schema";
 import { sql, and, eq } from "drizzle-orm";
 import { weekdayCount } from "~/utils/weekDayCount";
+import { createId } from "@paralleldrive/cuid2";
+import { DayNameType } from "~/types/formSchemas";
+import z from "zod";
 
 export function getAllTimetableNames(
   db: PlanetScaleDatabase,
@@ -94,4 +97,31 @@ export function getSubjectCountByDateRange(
     })
     .from(sq)
     .groupBy(sq.subjectName, sq.isLab);
+}
+
+export function addTimetable(
+  db: PlanetScaleDatabase,
+  userId: string,
+  timetableName: string,
+  timetableObject: {
+    dayName: z.infer<typeof DayNameType>;
+    subjectId: string;
+    startTime: string;
+    endTime: string;
+    isLab: "true" | "false";
+  }[]
+) {
+  return db.insert(timeTable)
+    .values(timetableObject.map((item) => {
+      return {
+        id: createId(),
+        dayName: item.dayName,
+        userId: userId,
+        timetableName: timetableName,
+        subjectId: item.subjectId,
+        startTime: `${item.startTime}:00`,
+        endTime: `${item.startTime}:00`,
+        isLab: item.isLab === "true" ? 1 : 0,
+      };
+    }))
 }
