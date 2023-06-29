@@ -1,25 +1,12 @@
-/*
 import { type StateCreator } from "zustand";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import type { RouterOutput } from "~/server/api/root";
 
 export interface DashboardSlice {
-  dateRangeForm: 
-  setDateRange: () => void;
+  attendanceData: RouterOutput["attendance"]["getByRange"] | undefined;
+  isLoading: boolean | undefined;
 }
 
-export const dashboardSlice:StateCreator<
-  DashboardSlice
-> = (set) => ({
-  dateRangeForm: useForm,
-  setDateRange: () => {
-    set((state) => ({
-      dateRangeForm: {
-        from: state.dateRangeForm.from,
-        to: state.dateRangeForm.to,
-      },
-    }));
-  },
+export const dashboardSlice: StateCreator<DashboardSlice> = (set) => ({
+  attendanceData: undefined,
+  isLoading: undefined,
 });
-*/
