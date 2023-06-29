@@ -40,10 +40,10 @@ export function ExceptionTable({ ...props }: ExceptionTableProps) {
                   size: "sm",
                   variant: "ghost",
                 }),
-                "mt-2 w-9 px-0"
+                "mt-2 w-9 bg-red-400 bg-opacity-20 px-0 hover:border-2 border-red-600 dark:bg-red-950"
               )}
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-4 w-4" color="red" />
             </div>
           </TableRow>
         ))}
