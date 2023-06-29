@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import type { NextPage } from "next";
 import type { ReactElement, ReactNode } from "react";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "@/components/ui/toaster";
 //import Head from "next/head";
 //import { siteConfig } from "~/config/site";
 //import { cn } from "~/lib/utils";
@@ -31,9 +32,10 @@ const MyApp = ({
   const getLayout = Component.getLayout ?? ((page) => page);
   return (
     <SessionProvider session={session}>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        {getLayout(<Component {...pageProps} />)}
-      </ThemeProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {getLayout(<Component {...pageProps} />)}
+          <Toaster />
+        </ThemeProvider>
     </SessionProvider>
   );
 };
