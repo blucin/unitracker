@@ -40,3 +40,19 @@ export function getSubjectWithDay(
     .leftJoin(timeTable, eq(timeTable.subjectId, subject.id))
     .orderBy(timeTable.dayName);
 }
+
+export function addSubject(
+  db: PlanetScaleDatabase,
+  userId: string,
+  subjectName: string,
+  hasLab: boolean,
+  subjectCode?: string
+) {
+  return db.insert(subject).values({
+    id: createId(),
+    subjectName: subjectName,
+    subjectCode: subjectCode,
+    hasLab: hasLab === true ? 1 : 0,
+    userId: userId,
+  });
+}
