@@ -24,8 +24,8 @@ export function ExceptionTable({ ...props }: ExceptionTableProps) {
       <TableHeader>
         <TableRow>
           <TableHead>Exception Name</TableHead>
-          <TableHead>Start day</TableHead>
-          <TableHead>End day</TableHead>
+          <TableHead>Start date</TableHead>
+          <TableHead>End date</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
