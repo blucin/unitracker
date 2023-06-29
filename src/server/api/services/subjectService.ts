@@ -1,6 +1,22 @@
 import { type PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless";
 import { timeTable, subject } from "~/drizzle/out/schema";
 import { and, eq } from "drizzle-orm";
+import { createId } from "@paralleldrive/cuid2";
+
+export function getAllSubjectsIdAndNameByUserId(
+  db: PlanetScaleDatabase,
+  userId: string
+) {
+  return db
+    .select({
+      subjectId: subject.id,
+      subjectName: subject.subjectName,
+      hasLab: subject.hasLab,
+    })
+    .from(subject)
+    .where(eq(subject.userId, userId))
+    .orderBy(subject.subjectName);
+}
 
 export function getSubjectWithDay(
   db: PlanetScaleDatabase,
