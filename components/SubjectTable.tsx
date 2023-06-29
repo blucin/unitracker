@@ -26,7 +26,7 @@ export function SubjectTable({ ...props }: SubjectTableProps) {
         <TableRow>
           <TableHead>Subject Code</TableHead>
           <TableHead>Subject Name</TableHead>
-          <TableHead className="w-[100px]">hasLab?</TableHead>
+          <TableHead>hasLab?</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
