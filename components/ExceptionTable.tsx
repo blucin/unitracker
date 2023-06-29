@@ -33,7 +33,7 @@ export function ExceptionTable({ ...props }: ExceptionTableProps) {
           <TableRow key={exception.id}>
             <TableCell>{exception.holiday}</TableCell>
             <TableCell>{exception.startDate}</TableCell>
-            <TableCell>{exception.endDate}</TableCell>
+            <TableCell>{exception.endDate === exception.startDate ? "-" : exception.endDate}</TableCell>
             <div
               className={cn(
                 buttonVariants({
