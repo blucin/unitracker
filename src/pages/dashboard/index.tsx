@@ -1,198 +1,53 @@
 import { useSession } from "next-auth/react";
-import { api } from "~/utils/api";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from "~/pages/_app";
 import {
-  CalendarDateRangePicker,
-  TimeTableSelector,
+  DashboardDateTimetableForm,
+  Dashboard
 } from "@/components/DashboardComponents";
 import { Separator } from "@/components/ui/separator";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Card as TremorCard,
-  Title,
-  BadgeDelta,
-  Flex,
-  ProgressBar,
-} from "@tremor/react";
-import _ from "lodash";
-import type { RouterOutput } from "~/server/api/root";
+import * as React from 'react';
+import { DashboardFormSchema } from "~/types/formSchemas";
+import * as z from "zod";
+import { api } from "~/utils/api";
 
-function calculateMinMaxAttendance(
-  data: RouterOutput["attendance"]["getByRange"] | undefined
-) {
-  // if there are multiple subjects with same attendance, return the last one
-  // if there are no subjects, return "-"
-  let theoryMaxName = "-";
-  let labMaxName = "-";
-  let theoryMinName = "-";
-  let labMinName = "-";
-  let theoryMax = 0;
-  let labMax = 0;
-  let theoryMin = 100;
-  let labMin = 100;
-
-  if (data) {
-    _.map(data.theory, (value, key) => {
-      if (value > theoryMax) {
-        theoryMax = value;
-        theoryMaxName = key;
-      }
-
-      if (value < theoryMin) {
-        theoryMin = value;
-        theoryMinName = key;
-      }
-    });
-
-    _.map(data.lab, (value, key) => {
-      if (value > labMax) {
-        labMax = value;
-        labMaxName = key;
-      }
-
-      if (value < labMin) {
-        labMin = value;
-        labMinName = key;
-      }
-    });
-  }
-  return {
-    theoryMaxName,
-    labMaxName,
-    theoryMinName,
-    labMinName,
-    theoryMax,
-    labMax,
-    theoryMin,
-    labMin,
-  };
-}
-
-const Dashboard: NextPageWithLayout = () => {
+const DashboardPage: NextPageWithLayout = () => {
   useSession({
     required: true,
     onUnauthenticated() {
       return { redirectTo: "/login" };
     },
   });
+  
+  const timeTableNames = api.timetable.getAllTimetableName.useQuery().data;
+  const [showDashboard, setShowDashboard] = React.useState(false);
+  const [formData, setFormData] = React.useState<z.infer<typeof DashboardFormSchema> | undefined>(undefined);
 
-  const { data, isLoading } = api.attendance.getByRange.useQuery({
-    startDate: new Date("2023-05-01"),
-    endDate: new Date("2023-05-06"),
-    timetableName: "sem1",
-  });
-
-  const {
-    theoryMaxName,
-    labMaxName,
-    theoryMinName,
-    labMinName,
-    theoryMax,
-    labMax,
-    theoryMin,
-    labMin,
-  } = calculateMinMaxAttendance(data);
+  function onSubmit(formData: z.infer<typeof DashboardFormSchema>) {
+    setFormData(formData);
+    setShowDashboard(true);
+  }
 
   return (
     <>
-      <div className="justify-between lg:flex">
+      <div className="justify-between items-start lg:flex">
         <h2 className="mb-5 text-2xl font-bold tracking-tight"> Dashboard </h2>
-        <div className="gap-4 lg:flex">
-          <div className="my-5 lg:my-0">
-            <p className="my-3 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 lg:hidden">
-              Select date range:{" "}
-            </p>
-            <CalendarDateRangePicker />
-          </div>
-          <div className="my-5 lg:my-0">
-            <p className="my-3 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 lg:hidden">
-              Select your timetable:{" "}
-            </p>
-            <TimeTableSelector />
-          </div>
-        </div>
+        <DashboardDateTimetableForm timeTableNames={timeTableNames} submitHandler={onSubmit} />
       </div>
 
       <Separator className="mb-4" />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Top Theory</CardTitle>
-            <BadgeDelta deltaType="increase"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{theoryMaxName}</div>
-            <p className="text-xs text-muted-foreground">{theoryMax}%</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Top Lab</CardTitle>
-            <BadgeDelta deltaType="increase"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{labMaxName}</div>
-            <p className="text-xs text-muted-foreground">{labMax}%</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Least Theory</CardTitle>
-            <BadgeDelta deltaType="decrease"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{theoryMinName}</div>
-            <p className="text-xs text-muted-foreground">{theoryMin}%</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Least Lab</CardTitle>
-            <BadgeDelta deltaType="decrease"></BadgeDelta>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{labMinName}</div>
-            <p className="text-xs text-muted-foreground">{labMin}%</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <TremorCard className="my-4">
-        <Title>Subject: Theories</Title>
-        {_.map(data?.theory, (value, key) => (
-          <div key={key} className="mt-4 space-y-2">
-            <Flex>
-              <p className="text-sm">{key}</p>
-              <p className="text-sm">{`${value}%`}</p>
-            </Flex>
-            <ProgressBar value={value} />
-          </div>
-        ))}
-      </TremorCard>
-
-      <TremorCard className="my-4">
-        <Title>Subject: Lab</Title>
-        {_.map(data?.lab, (value, key) => (
-          <div key={key} className="mt-4 space-y-2">
-            <Flex>
-              <p className="text-sm">{key}</p>
-              <p className="text-sm">{`${value}%`}</p>
-            </Flex>
-            <ProgressBar value={value} />
-          </div>
-        ))}
-      </TremorCard>
+      {showDashboard ? (
+        <Dashboard formData={formData} />
+      ) : (
+        <p className="text-center">Please select a date range and timetable to view the dashboard.</p>
+      )}
     </>
   );
 };
 
-Dashboard.getLayout = function getLayout(page: React.ReactElement) {
+DashboardPage.getLayout = function getLayout(page: React.ReactElement) {
   return <DashboardLayout>{page}</DashboardLayout>;
 };
 
-export default Dashboard;
+export default DashboardPage;

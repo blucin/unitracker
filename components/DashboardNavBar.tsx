@@ -5,6 +5,35 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navConfig } from "~/config/sitelink";
 import { cn } from "~/lib/utils";
+import {
+  FastForward,
+  Gauge,
+  Home,
+  BookOpen,
+  Clock3,
+  XCircle,
+  PlusCircle,
+  Pencil,
+  HelpCircle,
+} from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+
+const getNavIcon = (title: string) => {
+  switch (title) {
+    case "Dashboard":
+      return <Gauge className="mr-2 h-4 w-4" />;
+    case "Home":
+      return <Home className="mr-2 h-4 w-4" />;
+    case "Exceptions":
+      return <XCircle className="mr-2 h-4 w-4" />;
+    case "Add":
+      return <PlusCircle className="mr-2 h-4 w-4" />;
+    case "Edit":
+      return <Pencil className="mr-2 h-4 w-4" />;
+    default:
+      return <HelpCircle className="mr-2 h-4 w-4" />;
+  }
+};
 
 export function DashboardNavBar({
   className,
@@ -19,7 +48,7 @@ export function DashboardNavBar({
             <h2 className="mb-2 px-2 text-lg font-semibold tracking-tight">
               {object.title}
             </h2>
-
+            <Separator/>
             {object.items.map((item, index) => (
               <Link key={index} href={item.href ? item.href : "/"}>
                 <Button
@@ -28,6 +57,13 @@ export function DashboardNavBar({
                   className="w-full justify-start"
                   key={index}
                 >
+                  {getNavIcon(
+                    item.title.slice(0, 3) === "Add"
+                      ? "Add"
+                      : item.title.slice(0, 4) === "Edit"
+                      ? "Edit"
+                      : item.title
+                  )}
                   {item.title}
                 </Button>
               </Link>
