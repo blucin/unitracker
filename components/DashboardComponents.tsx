@@ -6,10 +6,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 // form
-import { addDays, format } from "date-fns";
+import { DashboardFormSchema } from "~/types/formSchemas";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { type DateRange } from "react-day-picker";
-import useStore from "~/store/store";
 import { cn } from "~/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -44,40 +43,29 @@ import _ from "lodash";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BadgeDelta } from "@tremor/react";
 
+// for dashboard component
+import { api } from "~/utils/api";
+import { LoadingTable } from "@/components/LoadingTable";
+import { calculateMinMaxAttendance } from "~/utils/minMaxAttendance";
+
 // date range picker and timetable form
 type DashboardDateTimetableFormProps = {
   timeTableNames: RouterOutput["timetable"]["getAllTimetableName"] | undefined;
+  submitHandler: (data: z.infer<typeof DashboardFormSchema>) => void;
 };
-
-const FormSchema = z.object({
-  date: z.object({
-    from: z.date(),
-    to: z.date(),
-  }),
-  timetableName: z.string(),
-});
 
 export function DashboardDateTimetableForm({
   ...props
 }: DashboardDateTimetableFormProps) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2023, 0, 20),
-    to: addDays(new Date(2023, 0, 20), 20),
+  const form = useForm<z.infer<typeof DashboardFormSchema>>({
+    resolver: zodResolver(DashboardFormSchema),
   });
-
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-  });
-
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log("FORM DATA", data);
-  }
 
   return (
     <Form {...form}>
       <form
-        className="items-start gap-4 flex flex-col lg:flex-row"
-        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col items-start gap-4 lg:flex-row"
+        onSubmit={form.handleSubmit(props.submitHandler)}
       >
         <FormField
           control={form.control}
@@ -125,7 +113,7 @@ export function DashboardDateTimetableForm({
                 </PopoverContent>
               </Popover>
               <div className="flex gap-1">
-                <FormMessage/>
+                <FormMessage />
                 <FormDescription className="lg:hidden">
                   The date range to calculate attendance for
                 </FormDescription>
@@ -160,7 +148,7 @@ export function DashboardDateTimetableForm({
                 </SelectContent>
               </Select>
               <div className="flex gap-1">
-                <FormMessage/>
+                <FormMessage />
                 <FormDescription className="lg:hidden">
                   Calculation will be based of the timetable selected{" "}
                 </FormDescription>
@@ -168,7 +156,7 @@ export function DashboardDateTimetableForm({
             </FormItem>
           )}
         />
-        <Button className="h-[36px] mb-4 lg:mb-0" type="submit">
+        <Button className="mb-4 h-[36px] lg:mb-0" type="submit">
           Retrieve
         </Button>
       </form>
@@ -184,9 +172,7 @@ type DashboardAttendanceCardProps = {
   isLab: boolean;
 };
 
-export function DashboardAttendanceCard({
-  ...props
-}: DashboardAttendanceCardProps) {
+function DashboardAttendanceCard({ ...props }: DashboardAttendanceCardProps) {
   return (
     <TremorCard className={props.className}>
       <Title>{props.title}</Title>
@@ -217,7 +203,7 @@ type DashboardAttendanceMinMaxCardProps = {
   deltaType: "increase" | "decrease";
 };
 
-export function DashboardAttendanceMinMaxCard({
+function DashboardAttendanceMinMaxCard({
   ...props
 }: DashboardAttendanceMinMaxCardProps) {
   return (
@@ -232,4 +218,82 @@ export function DashboardAttendanceMinMaxCard({
       </CardContent>
     </Card>
   );
+}
+
+type DashboardProps = {
+  className?: string;
+  formData: z.infer<typeof DashboardFormSchema> | undefined;
+};
+
+export function Dashboard({ ...props }: DashboardProps) {
+  if (props.formData != undefined) {
+    const { data, isLoading } = api.attendance.getByRange.useQuery({
+      startDate: props.formData.date.from,
+      endDate: props.formData.date.to,
+      timetableName: props.formData.timetableName,
+    });
+
+    const {
+      theoryMaxName,
+      labMaxName,
+      theoryMinName,
+      labMinName,
+      theoryMax,
+      labMax,
+      theoryMin,
+      labMin,
+    } = calculateMinMaxAttendance(data);
+
+    return isLoading ? (
+      <LoadingTable rows={10} cols={5} />
+    ) : (
+      <>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <DashboardAttendanceMinMaxCard
+            cardTitle="Top Theory"
+            subjectName={theoryMaxName}
+            attendance={theoryMax}
+            deltaType="increase"
+          />
+          <DashboardAttendanceMinMaxCard
+            cardTitle="Top Lab"
+            subjectName={labMaxName}
+            attendance={labMax}
+            deltaType="increase"
+          />
+          <DashboardAttendanceMinMaxCard
+            cardTitle="Bottom Theory"
+            subjectName={theoryMinName}
+            attendance={theoryMin}
+            deltaType="decrease"
+          />
+          <DashboardAttendanceMinMaxCard
+            cardTitle="Bottom Lab"
+            subjectName={labMinName}
+            attendance={labMin}
+            deltaType="decrease"
+          />
+        </div>
+
+        <DashboardAttendanceCard
+          className="my-4"
+          data={data}
+          title={"Subject: Theories"}
+          isLab={false}
+        />
+        <DashboardAttendanceCard
+          className="my-4"
+          data={data}
+          title={"Subject: Labs"}
+          isLab={true}
+        />
+      </>
+    );
+  } else {
+    return (
+      <>
+        <p>Server Error</p>
+      </>
+    );
+  }
 }
