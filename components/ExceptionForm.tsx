@@ -89,7 +89,7 @@ export function ExceptionForm({ ...props }: ExceptionFormProps) {
                 </RadioGroup>
               </FormControl>
               <FormDescription>
-                e.g. Single: "New Year", Ranged: "Summer Vacation"
+                e.g. Single: `New Year`, Ranged: `Summer Vacation`
               </FormDescription>
               <FormMessage />
             </FormItem>
