@@ -24,6 +24,21 @@ export const navConfig: NavConfig = {
       ],
     },
     {
+      title: "Attendance",
+      items: [
+        {
+          title: "Add Attendance",
+          items: [],
+          href: "/attendance/create",
+        },
+        {
+          title: "Edit Attendance",
+          items: [],
+          href: "/attendance",
+        },
+      ],
+    },
+    {
       title: "Subjects",
       items: [
         {
