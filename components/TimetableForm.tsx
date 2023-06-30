@@ -172,7 +172,7 @@ export function TimetableForm({ ...props }: TimetableFormProps) {
               )}
             />
 
-            <div className="flex gap-5">
+            <div className="md:flex gap-5">
               <FormField
                 control={form.control}
                 name={`timetableObject.${index}.startTime`}
