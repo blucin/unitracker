@@ -1,10 +1,13 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { getAttendanceByDateRangeWithDay } from "~/server/api/services/attendanceService";
+import { getAttendanceByDateRangeWithDay, getAllAttendance } from "~/server/api/services/attendanceService";
 import { getSubjectCountByDateRange } from "~/server/api/services/timetableService";
 import _ from "lodash";
 
 export const attendanceRouter = createTRPCRouter({
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    return await getAllAttendance(ctx.db, ctx.session.user.id);
+  }),
   getByRange: protectedProcedure
     .input(
       z.object({
