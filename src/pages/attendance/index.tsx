@@ -6,7 +6,7 @@ import { LoadingTable } from "@/components/LoadingTable";
 import { Separator } from "@/components/ui/separator";
 import { Balancer } from "react-wrap-balancer";
 import Link from "next/link";
-//import { AttendanceTable } from "@/components/AttendanceTable";
+import { AttendanceTable } from "@/components/AttendanceTable";
 
 const Attendance: NextPageWithLayout = () => {
   useSession({
@@ -15,6 +15,7 @@ const Attendance: NextPageWithLayout = () => {
       return { redirectTo: "/login" };
     },
   });
+  const { data, isLoading } = api.attendance.getAll.useQuery();
   return (
     <>
       <div className="space-y-2">
@@ -41,13 +42,11 @@ const Attendance: NextPageWithLayout = () => {
         </p>
       </div>
       <Separator className="my-5" />
-      {/*
       {isLoading ? (
         <LoadingTable rows={10} cols={3} />
       ) : (
         <AttendanceTable data={data} />
       )}
-      */}
     </>
   );
 };
