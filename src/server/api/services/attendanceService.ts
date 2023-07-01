@@ -46,6 +46,7 @@ export function getAllAttendance(
 ) {
   return db
     .select({
+      id: attendance.id,
       date: attendance.date,
       dayName: timeTable.dayName,
       subjectName: subject.subjectName,
