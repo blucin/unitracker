@@ -9,6 +9,12 @@ export const DashboardFormSchema = z.object({
   timetableName: z.string(),
 });
 
+export const AttendanceFormSchema = z.object({
+  selectedTimeTable: z.string(),
+  date: z.date(),
+  timetableIds: z.string().array().min(1),
+});
+
 export const SubjectFormSchema = z.object({
   subjectName: z.string(),
   subjectCode: z.string().optional(),
