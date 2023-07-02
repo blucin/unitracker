@@ -3,8 +3,8 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from "~/pages/_app";
 import { Balancer } from "react-wrap-balancer";
 import { Separator } from "@/components/ui/separator";
-//import { AttendanceForm } from "@/components/ExceptionForm";
-//import { type AttendanceFormSchema } from "~/types/formSchemas";
+import { AttendanceForm } from "@/components/AttendanceForm";
+import { type AttendanceFormSchema } from "~/types/formSchemas";
 import * as z from "zod";
 import { api } from "~/utils/api";
 import { toast } from "@/components/ui/use-toast";
@@ -18,6 +18,7 @@ const CreateAttendance: NextPageWithLayout = () => {
       return { redirectTo: "/login" };
     },
   });
+  const timeTableNames = api.timetable.getAllTimetableName.useQuery().data;
   /*
   const mutation = api.exception.addException.useMutation({
     onSuccess: (data, variables) => {
@@ -69,11 +70,9 @@ const CreateAttendance: NextPageWithLayout = () => {
   });
   */
 
-  /*
   const onSubmit = (formData: z.infer<typeof AttendanceFormSchema>) => { 
     console.log(formData);
   };
-  */
 
   return (
     <>
@@ -81,17 +80,16 @@ const CreateAttendance: NextPageWithLayout = () => {
         <h2 className="text-2xl font-bold tracking-tight"> Attendances </h2>
         <p className="text-lg text-muted-foreground">
           <Balancer>
-            Add your attendnace here. Attendance are just a record of presence on a given date for a given timetable.
+            Add your attendance here. Attendance are just a record of presence on a given date for a given timetable.
           </Balancer>
         </p>
       </div>
       <Separator className="my-5" />
-      {/*
       <AttendanceForm
-        submitHandler={onSubmit}
-        disableSubmit={mutation.isLoading}
+        handleSubmit={onSubmit}
+        disableSubmit={false}
+        timeTableNames={timeTableNames}
       />
-      */}
     </>
   );
 };
