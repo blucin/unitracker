@@ -50,7 +50,7 @@ export const timeTableRouter = createTRPCRouter({
         .where(
           and(
             eq(timeTable.userId, ctx.session.user.id),
-            eq(timeTable.id, input.timetableName)
+            eq(timeTable.timetableName, input.timeTableName)
           )
         )
         .innerJoin(subject, eq(timeTable.subjectId, subject.id))
