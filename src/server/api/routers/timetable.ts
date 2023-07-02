@@ -40,12 +40,19 @@ export const timeTableRouter = createTRPCRouter({
   getByTimetableId: protectedProcedure
     .input(
       z.object({
-        timetableName: z.string(),
+        timeTableName: z.string(),
       })
     )
     .query(async ({ ctx, input }) => {
-      const _timeTable = await ctx.db
-        .select()
+      return await ctx.db
+        .select({
+          id: timeTable.id,
+          dayName: timeTable.dayName,
+          subjectName: subject.subjectName,
+          isLab: subject.hasLab,
+          startTime: timeTable.startTime,
+          endTime: timeTable.endTime,
+        })
         .from(timeTable)
         .where(
           and(
@@ -55,10 +62,6 @@ export const timeTableRouter = createTRPCRouter({
         )
         .innerJoin(subject, eq(timeTable.subjectId, subject.id))
         .orderBy(timeTable.dayName);
-
-      console.log(_timeTable);
-
-      return _timeTable;
     }),
 
   getAllTimetableName: protectedProcedure.query(async ({ ctx }) => {
