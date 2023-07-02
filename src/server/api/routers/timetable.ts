@@ -2,7 +2,7 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { subject, timeTable } from "~/drizzle/out/schema";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
-import _, { add } from "lodash";
+import _ from "lodash";
 import { getAllTimetableNames, addTimetable } from "~/server/api/services/timetableService";
 import { TimetableFormSchema } from "~/types/formSchemas";
 
