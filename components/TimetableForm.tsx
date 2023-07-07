@@ -164,8 +164,6 @@ export function TimetableForm({ ...props }: TimetableFormProps) {
                     same or different days.
                   </FormDescription>
                   <FormMessage />
-                  {form.formState.errors.timetableObject?.[index]?.dayName && (
-                    <p>{form.formState.errors.timetableObject?.[index]?.dayName?.message}</p>)}
                 </FormItem>
               )}
             />
