@@ -12,7 +12,7 @@ export default function Login({
   console.log(providers);
   // pass providers to sign up card
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex items-center justify-center h-screen">
       <SignUpCard className="w-full max-w-md"/>
     </div>
   );
