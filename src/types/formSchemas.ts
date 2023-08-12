@@ -1,4 +1,3 @@
-import { P } from "drizzle-orm/select.types.d-e43b2599";
 import * as z from "zod";
 
 export const DashboardFormSchema = z.object({
