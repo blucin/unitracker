@@ -7,8 +7,10 @@ import { AttendanceForm } from "@/components/AttendanceForm";
 import { type AttendanceFormSchema } from "~/types/formSchemas";
 import * as z from "zod";
 import { api } from "~/utils/api";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { Ban, Check } from "lucide-react";
+import { Ban, Car, Check } from "lucide-react";
 import { format } from "date-fns";
 
 const CreateAttendance: NextPageWithLayout = () => {
@@ -70,7 +72,7 @@ const CreateAttendance: NextPageWithLayout = () => {
   });
   */
 
-  const onSubmit = (formData: z.infer<typeof AttendanceFormSchema>) => { 
+  const onSubmit = (formData: z.infer<typeof AttendanceFormSchema>) => {
     console.log(formData);
   };
 
@@ -80,16 +82,30 @@ const CreateAttendance: NextPageWithLayout = () => {
         <h2 className="text-2xl font-bold tracking-tight"> Attendances </h2>
         <p className="text-lg text-muted-foreground">
           <Balancer>
-            Add your attendance here. Attendance are just a record of presence on a given date for a given timetable.
+            Add your attendance here. Attendance are just a record of presence
+            on a given date for a given timetable.
           </Balancer>
         </p>
       </div>
       <Separator className="my-5" />
-      <AttendanceForm
-        handleSubmit={onSubmit}
-        disableSubmit={false}
-        timeTableNames={timeTableNames}
-      />
+      <Card className="p-5">
+        <Tabs defaultValue="by_date" className="space-y-2">
+          <TabsList className="w-full grid grid-cols-2">
+            <TabsTrigger value="by_date">By Date</TabsTrigger>
+            <TabsTrigger value="by_date_range" disabled>
+              By Date Range (Soon)
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent className="p-2" value="by_date">
+            <AttendanceForm
+              handleSubmit={onSubmit}
+              disableSubmit={false}
+              timeTableNames={timeTableNames}
+            />
+          </TabsContent>
+          <TabsContent className="p-2" value="by_date_range"> WIP </TabsContent>
+        </Tabs>
+      </Card>
     </>
   );
 };
