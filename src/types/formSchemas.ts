@@ -11,7 +11,9 @@ export const DashboardFormSchema = z.object({
 export const AttendanceFormSchema = z.object({
   selectedTimeTable: z.string(),
   date: z.date(),
-  timetableIds: z.string().array().min(1),
+  timetableObjectIds : z.array(z.string()).refine((value) => value.some((obj) => obj), {
+    message: "Please select atleast one subject.",
+  }),
 });
 
 export const SubjectFormSchema = z.object({
@@ -101,6 +103,6 @@ export const TimetableFormSchema = z
         ]);
       }
     });
-    
+
     return true;
   });
