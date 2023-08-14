@@ -26,7 +26,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
 import type * as z from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
@@ -37,73 +37,6 @@ import React from "react";
 import { cn } from "~/lib/utils";
 import { Separator } from "@/components/ui/separator";
 
-type CheckboxCardProps = {
-  item: RouterOutput["timetable"]["getByTimetableId"][0];
-  control: ReturnType<
-    typeof useForm<z.infer<typeof AttendanceFormSchema>>
-  >["control"];
-};
-
-function CheckboxCard({ item, control }: CheckboxCardProps) {
-  return (
-    <FormField
-      key={item.id}
-      control={control}
-      name="timetableIds"
-      render={({ field }) => {
-        return (
-          <FormItem
-            key={item.id}
-            className={cn(
-              "flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 hover:bg-accent sm:items-center",
-              field.value?.includes(item.id) &&
-                "bg-accent text-accent-foreground"
-            )}
-          >
-            <FormControl>
-              <Checkbox
-                checked={field.value?.includes(item.id)}
-                onCheckedChange={(checked) => {
-                  if (Array.isArray(field.value)) {
-                    return checked
-                      ? field.onChange([...field.value, item.id])
-                      : field.onChange(
-                          field.value.filter((value) => value !== item.id)
-                        );
-                  } else {
-                    return field.onChange([item.id]);
-                  }
-                }}
-              />
-            </FormControl>
-            <div className="flex flex-col items-start justify-start sm:flex-row md:items-center">
-              <FormLabel className="whitespace-nowrap font-normal md:mb-0 sm:mb-3">
-                {item.subjectName} {item.isLab ? "(Lab)" : ""}
-              </FormLabel>
-              <Separator
-                className="mx-3 hidden h-4 sm:block"
-                decorative
-                orientation="vertical"
-              />
-              <FormDescription>
-                {item.dayName}
-              </FormDescription>
-              <Separator
-                className="mx-3 hidden h-4 sm:block"
-                decorative
-                orientation="vertical"
-              />
-              <FormDescription>
-                {item.startTime.slice(0, 5)} to {item.endTime.slice(0, 5)}
-              </FormDescription>
-            </div>
-          </FormItem>
-        );
-      }}
-    />
-  );
-}
-
 type FormUnitProps = {
   timeTableName: string;
   form: ReturnType<typeof useForm<z.infer<typeof AttendanceFormSchema>>>;
@@ -113,9 +46,22 @@ function FormUnit({ timeTableName, form }: FormUnitProps) {
   const { data, isLoading, isError } = api.timetable.getByTimetableId.useQuery({
     timeTableName: timeTableName,
   });
+
   const [formattedData, setFormattedData] = React.useState<
     RouterOutput["timetable"]["getByTimetableId"] | undefined
   >(undefined);
+
+  const handleDateChange = (date: Date | undefined) => {
+    // set Formmated data it will trigger the component to render new fields
+    if (!date) return;
+    setFormattedData(
+      data?.filter(
+        (item) =>
+          item.dayName === date.toLocaleDateString("en-US", { weekday: "long" })
+      )
+    );
+  };
+
   if (isLoading) {
     return (
       <Card className="flex h-[400px] w-full items-center justify-center">
@@ -131,24 +77,12 @@ function FormUnit({ timeTableName, form }: FormUnitProps) {
       </Card>
     );
   }
-  const selectedDate = form.getValues("date");
 
-  const handleDateChange = (date: Date | undefined) => {
-    if (!date) return;
-    setFormattedData(
-      data?.filter(
-        (item) =>
-          item.dayName === date.toLocaleDateString("en-US", { weekday: "long" })
-      )
-    );
-  };
+  const selectedDate = form.getValues("date");
 
   return (
     <>
-      <Card className="space-y-5 p-5">
-        <h2 className="text-center text-base font-medium underline underline-offset-8">
-          {timeTableName}
-        </h2>
+      <div className="space-y-5">
         <FormField
           control={form.control}
           name="date"
@@ -179,8 +113,8 @@ function FormUnit({ timeTableName, form }: FormUnitProps) {
                     mode="single"
                     selected={field.value}
                     onSelect={(value) => {
-                      field.onChange(value);
                       handleDateChange(value);
+                      field.onChange(value);
                     }}
                     initialFocus
                   />
@@ -194,22 +128,90 @@ function FormUnit({ timeTableName, form }: FormUnitProps) {
           )}
         />
 
-        <div className="mb-4">
-          <FormLabel className="text-base">Mark your attendance</FormLabel>
-          <FormDescription>
-            Select the subjects to mark attendance for
-          </FormDescription>
-        </div>
-
-        <div className="space-y-3">
-          {selectedDate &&
-            formattedData &&
-            /* filter out the data which is not from the selected Date then map */
-            formattedData.map((item) => (
-              <CheckboxCard key={item.id} item={item} control={form.control} />
-            ))}
-        </div>
-      </Card>
+        {selectedDate && formattedData ? (
+          formattedData.length === 0 ? (
+            <p>No classes on this day</p>
+          ) : (
+            <div className="space-y-3">
+              <FormField
+                control={form.control}
+                name="timetableObjectIds"
+                render={() => (
+                  <FormItem>
+                    <div className="mb-4">
+                      <FormLabel className="text-base">Mark your attendance for {timeTableName}</FormLabel>
+                      <FormDescription>
+                        Select the subjects to mark attendance for
+                      </FormDescription>
+                    </div>
+                    {formattedData.map((item) => (
+                      <FormField
+                        key={item.id}
+                        control={form.control}
+                        name="timetableObjectIds"
+                        render={({ field }) => {
+                          return (
+                            <FormItem
+                              key={item.id}
+                              className={cn(
+                                "flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 hover:bg-accent sm:items-center",
+                                field.value?.includes(item.id) &&
+                                  "bg-accent text-accent-foreground"
+                              )}
+                            >
+                              <FormControl>
+                                <Checkbox
+                                  checked={field.value?.includes(item.id)}
+                                  onCheckedChange={(checked) => {
+                                    if(Array.isArray(field.value)) {
+                                      return checked
+                                      ? field.onChange([...field.value, item.id])
+                                      : field.onChange(
+                                          field.value.filter((value) => value !== item.id)
+                                        );
+                                    } else {
+                                      return field.onChange([item.id]);
+                                    }
+                                  }}
+                                />
+                              </FormControl>
+                              <div className="flex flex-col items-start justify-start sm:flex-row md:items-center">
+                                <FormLabel className="whitespace-nowrap font-normal sm:mb-3 md:mb-0">
+                                  {item.subjectName} {item.isLab ? "(Lab)" : ""}
+                                </FormLabel>
+                                <Separator
+                                  className="mx-3 hidden h-4 sm:block"
+                                  decorative
+                                  orientation="vertical"
+                                />
+                                <FormDescription>
+                                  {item.dayName}
+                                </FormDescription>
+                                <Separator
+                                  className="mx-3 hidden h-4 sm:block"
+                                  decorative
+                                  orientation="vertical"
+                                />
+                                <FormDescription>
+                                  {item.startTime.slice(0, 5)} to{" "}
+                                  {item.endTime.slice(0, 5)}
+                                </FormDescription>
+                              </div>
+                            </FormItem>
+                          );
+                        }}
+                      />
+                    ))}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )
+        ) : (
+          <p className="text-base">*Please select a date</p>
+        )}
+      </div>
     </>
   );
 }
@@ -226,67 +228,99 @@ export function AttendanceForm({ ...props }: AttendanceFormProps) {
   });
 
   const selectedTimeTable = form.watch("selectedTimeTable");
+
   const [showForm, setShowForm] = React.useState(false);
 
-  return (
-    <Form {...form}>
-      <form
-        className="space-y-5"
-        onSubmit={form.handleSubmit(props.handleSubmit)}
-      >
-        <FormField
-          control={form.control}
-          name="selectedTimeTable"
-          render={({ field }) => (
-            <FormItem className="lg:space-y-0">
-              <FormLabel className="lg:hidden">Timetable:</FormLabel>
-              <Select
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  setShowForm(true);
-                }}
-              >
-                <FormControl>
-                  <SelectTrigger className="w-[240px]">
-                    <SelectValue placeholder="Select a timetable" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    {props.timeTableNames === undefined ? (
-                      <SelectLabel>No timetables:</SelectLabel>
-                    ) : (
-                      <SelectLabel>Timetables:</SelectLabel>
-                    )}
-                    {props.timeTableNames === undefined ? (
-                      <></>
-                    ) : (
-                      props.timeTableNames?.map((timetable, index) => (
-                        <SelectItem key={index} value={timetable.timeTableName}>
-                          {timetable.timeTableName}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <div className="flex gap-1">
-                <FormMessage />
-                <FormDescription className="lg:hidden">
-                  Calculation will be based of the timetable selected{" "}
-                </FormDescription>
-              </div>
-            </FormItem>
-          )}
-        />
+  React.useEffect(() => {
+    const temp = form.getValues("selectedTimeTable");
+    form.reset();
+    // set selectedTimeTable to the new value
+    form.setValue("selectedTimeTable", temp);
+  }, [selectedTimeTable]);
 
-        {/* Using a sub form so the formfield dynamically change based on the selected timetable */}
-        {showForm ? (
-          <FormUnit timeTableName={selectedTimeTable} form={form} />
-        ) : (
-          <p>Select a timetable or create one first</p>
-        )}
-      </form>
-    </Form>
+  return (
+    <>
+      <Form {...form}>
+        <form
+          className="space-y-5"
+          onSubmit={form.handleSubmit(props.handleSubmit)}
+        >
+          <FormField
+            control={form.control}
+            name="selectedTimeTable"
+            render={({ field }) => (
+              <FormItem className="lg:space-y-0">
+                <FormLabel className="lg:hidden">Timetable:</FormLabel>
+                <Select
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    setShowForm(true);
+                  }}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-[240px]">
+                      <SelectValue placeholder="Select a timetable" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {props.timeTableNames === undefined ? (
+                        <SelectLabel>No timetables:</SelectLabel>
+                      ) : (
+                        <SelectLabel>Timetables:</SelectLabel>
+                      )}
+                      {props.timeTableNames === undefined ? (
+                        <></>
+                      ) : (
+                        props.timeTableNames?.map((timetable, index) => (
+                          <SelectItem
+                            key={index}
+                            value={timetable.timeTableName}
+                          >
+                            {timetable.timeTableName}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <div className="flex gap-1">
+                  <FormMessage />
+                  <FormDescription className="lg:hidden">
+                    Calculation will be based of the timetable selected{" "}
+                  </FormDescription>
+                </div>
+              </FormItem>
+            )}
+          />
+
+          {/* Using a sub form so the formfield dynamically change based on the selected timetable */}
+          {showForm ? (
+            selectedTimeTable ? (
+              <FormUnit timeTableName={selectedTimeTable} form={form} />
+            ) : (
+              <></>
+            )
+          ) : (
+            <p>Select a timetable or create one first</p>
+          )}
+
+          <Button
+            type="submit"
+            className="w-[130px]"
+            disabled={props.disableSubmit}
+          >
+            {props.disableSubmit ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </>
+            ) : (
+              "Submit"
+            )}
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }
