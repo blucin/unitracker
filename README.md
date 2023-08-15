@@ -1,4 +1,4 @@
-# [WIP] UniTrackr
+# [WIP] UniTracker
 
 Full stack attendance management solution for a single user as of now, built with Next.js, NextAuth.js, Prisma, Tailwind CSS and tRPC, with planetscale as the database. Shadcn ui is used for the UI components.
 
