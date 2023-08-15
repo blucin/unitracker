@@ -1,6 +1,8 @@
 import { type PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless";
 import { attendance, timeTable, subject } from "~/drizzle/out/schema";
 import { and, desc, eq, sql } from "drizzle-orm";
+import { createId } from "@paralleldrive/cuid2";
+import { format } from "date-fns";
 
 export function getAttendanceByDateRangeWithDay(
   db: PlanetScaleDatabase,
@@ -41,9 +43,6 @@ export function getAttendanceByDateRangeWithDay(
 }
 
 export function getAllAttendance(db: PlanetScaleDatabase, userId: string) {
-  db: PlanetScaleDatabase,
-  userId: string
-) {
   return db
     .select({
       id: attendance.id,
@@ -59,4 +58,20 @@ export function getAllAttendance(db: PlanetScaleDatabase, userId: string) {
     .innerJoin(subject, eq(timeTable.subjectId, subject.id))
     .where(eq(attendance.userId, userId))
     .orderBy(desc(attendance.date));
+}
+
+export function addMultipleAttendance(
+  db: PlanetScaleDatabase,
+  userId: string,
+  timetableIds: string[],
+  date: Date
+) {
+  return db.insert(attendance).values(timetableIds.map((id) => {
+    return {
+      id: createId(),
+      userId,
+      timetableId: id,
+      date: format(date, "yyyy-MM-dd"),
+    };
+  }))
 }
