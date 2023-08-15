@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 import { siteConfig } from "~/config/site";
 import { cn } from "~/lib/utils"
-import { Database } from "lucide-react";
+import { CalendarCheck } from "lucide-react";
 
 export function MainNav() {
   const pathname = usePathname();
@@ -14,7 +14,7 @@ export function MainNav() {
   return (
     <div className="mr hidden lg:flex">
       <Link href="/" className="mr-6 flex items-center space-x-2">
-        <Database className="h-6 w-6" />
+        <CalendarCheck className="h-6 w-6" />
         <span className="hidden font-bold sm:inline-block">
           {siteConfig.name}
         </span>

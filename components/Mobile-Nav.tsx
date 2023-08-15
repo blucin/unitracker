@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link, { type LinkProps } from "next/link";
 import { useRouter } from "next/navigation";
-import { Database, SidebarOpen } from "lucide-react";
+import { CalendarCheck, SidebarOpen } from "lucide-react";
 
 import { navConfig } from "~/config/sitelink";
 import { siteConfig } from "~/config/site";
@@ -32,7 +32,7 @@ export function MobileNav() {
           className="flex items-center"
           onOpenChange={setOpen}
         >
-          <Database className="mr-2 h-4 w-4" />
+          <CalendarCheck className="mr-2 h-4 w-4" />
           <span className="font-bold">{siteConfig.name}</span>
         </MobileLink>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
