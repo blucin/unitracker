@@ -21,21 +21,18 @@ const CreateAttendance: NextPageWithLayout = () => {
     },
   });
   const timeTableNames = api.timetable.getAllTimetableName.useQuery().data;
-  /*
-  const mutation = api.exception.addException.useMutation({
+  
+  const mutation = api.attendance.addAttendanceByTimetableId.useMutation({
     onSuccess: (data, variables) => {
       toast({
-        title: "Sucessfully added exception!",
+        title: "Sucessfully added attendance!",
         description: (
           <>
             <div>
               <Check className="h-6 w-6" color="green" />
-              <p>Exception: {variables.exceptionName}</p>
+              <p>Attendance for: {format(variables.date, "yyyy-MM-dd")}</p>
             </div>
-              <p>Start Date: {format(variables.startDate, "yyyy-MM-dd")}</p>
-            {(variables.endDate && variables.isRange==="true") && (
-              <p>End Date: {format(variables.startDate, "yyyy-MM-dd")}</p>
-            )}
+              <p>Timetable: {variables.selectedTimeTable}</p>
           </>
         ),
       });
@@ -49,7 +46,7 @@ const CreateAttendance: NextPageWithLayout = () => {
             <>
               <div>
                 <Ban className="h-6 w-6" color="red" />
-                <p>Exception already exists!</p>
+                <p>Attendance already exist (atleast for one of the selected subject)!</p>
               </div>
             </>
           ),
@@ -70,10 +67,9 @@ const CreateAttendance: NextPageWithLayout = () => {
       });
     },
   });
-  */
 
   const onSubmit = (formData: z.infer<typeof AttendanceFormSchema>) => {
-    console.log(formData);
+    mutation.mutate(formData);
   };
 
   return (
@@ -93,7 +89,7 @@ const CreateAttendance: NextPageWithLayout = () => {
           <TabsList className="w-full grid grid-cols-2">
             <TabsTrigger value="by_date">By Date</TabsTrigger>
             <TabsTrigger value="by_date_range" disabled>
-              By Date Range (Soon)
+              By Date Range
             </TabsTrigger>
           </TabsList>
           <TabsContent className="p-2" value="by_date">
