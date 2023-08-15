@@ -40,7 +40,7 @@ export function getAttendanceByDateRangeWithDay(
     .groupBy(sq.subjectName, sq.isLab);
 }
 
-export function getAllAttendance(
+export function getAllAttendance(db: PlanetScaleDatabase, userId: string) {
   db: PlanetScaleDatabase,
   userId: string
 ) {
@@ -53,7 +53,8 @@ export function getAllAttendance(
       isLab: timeTable.isLab,
       startTime: timeTable.startTime,
       endTime: timeTable.endTime,
-    }).from(attendance)
+    })
+    .from(attendance)
     .innerJoin(timeTable, eq(attendance.timetableId, timeTable.id))
     .innerJoin(subject, eq(timeTable.subjectId, subject.id))
     .where(eq(attendance.userId, userId))
