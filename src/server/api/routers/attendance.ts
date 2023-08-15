@@ -1,7 +1,12 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { getAttendanceByDateRangeWithDay, getAllAttendance } from "~/server/api/services/attendanceService";
+import {
+  getAttendanceByDateRangeWithDay,
+  getAllAttendance,
+  addMultipleAttendance,
+} from "~/server/api/services/attendanceService";
 import { getSubjectCountByDateRange } from "~/server/api/services/timetableService";
+import { AttendanceFormSchema } from "~/types/formSchemas";
 import _ from "lodash";
 
 export const attendanceRouter = createTRPCRouter({
@@ -20,14 +25,14 @@ export const attendanceRouter = createTRPCRouter({
       type resultSchema = {
         lab: {
           [key: string]: number;
-        },
+        };
         theory: {
           [key: string]: number;
-        }
-      }
+        };
+      };
 
       // contains subjectName with it's attendance in % for lab and theory
-      const result:resultSchema = {
+      const result: resultSchema = {
         lab: {},
         theory: {},
       };
@@ -49,7 +54,7 @@ export const attendanceRouter = createTRPCRouter({
         input.startDate,
         input.endDate
       );
-      
+
       // format data
       const subjectResult = _.groupBy(subjectByTimeTableId, function (item) {
         return item.subjectName;
@@ -66,23 +71,35 @@ export const attendanceRouter = createTRPCRouter({
       // TODO: make subject name unique in db
       _.map(subjectResult, (value, key) => {
         _.map(attendanceResult, (value2, key2) => {
-          // if subject name matches  
-          if(key===key2) {
+          // if subject name matches
+          if (key === key2) {
             _.map(value2, (value3, key3) => {
               _.map(value, (value4, key4) => {
                 if (value3.isLab === value4.isLab) {
-                  const percentage = Number(value3.count) / Number(value4.count) * 100;
+                  const percentage =
+                    (Number(value3.count) / Number(value4.count)) * 100;
                   if (value3.isLab) {
                     result.lab[key] = Math.round(percentage * 100) / 100;
                   } else {
                     result.theory[key] = Math.round(percentage * 100) / 100;
                   }
                 }
-              })
-            })
+              });
+            });
           }
-      })})
+        });
+      });
 
       return result;
+    }),
+  addAttendanceByTimetableId: protectedProcedure
+    .input(AttendanceFormSchema)
+    .mutation(({ ctx, input }) => {
+      return addMultipleAttendance(
+        ctx.db,
+        ctx.session.user.id,
+        input.timetableObjectIds,
+        input.date
+      );
     }),
 });
