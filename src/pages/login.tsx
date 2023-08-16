@@ -9,18 +9,17 @@ import type {
 export default function Login({
   providers,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  console.log(providers);
   // pass providers to sign up card
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-screen px-6">
       <SignUpCard className="w-full max-w-md"/>
     </div>
   );
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  /* disable for now, the sign in button will redirect for us 
   const session = await getServerAuthSession(context);
-  console.log(session);
   if (session) {
     return {
       redirect: {
@@ -28,8 +27,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
+  */
   const providers = await getProviders();
-  console.log("providers: ", providers);
   return {
     props: { providers: providers ?? [] },
   };
