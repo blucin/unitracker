@@ -22,8 +22,7 @@ export default function SignUpCard({
           Choose a provider to login with
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4">
-
+      <CardContent className="grid gap-4 h-fit">
         <div className="grid grid-cols-1 gap-6">
           <Button disabled onClick={()=>void signIn("github", {
             callbackUrl: `${window.location.origin}/dashboard`
