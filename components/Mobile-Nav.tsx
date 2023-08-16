@@ -29,11 +29,11 @@ export function MobileNav() {
       <SheetContent size="xl" position="left" className="pr-0">
         <MobileLink
           href="/"
-          className="flex items-center"
+          className="flex items-center w-fit"
           onOpenChange={setOpen}
         >
-          <CalendarCheck className="mr-2 h-4 w-4" />
-          <span className="font-bold">{siteConfig.name}</span>
+          <CalendarCheck className="mr-2 h-6 w-6" />
+          <span className="font-bold underline underline-offset-4">{siteConfig.name}</span>
         </MobileLink>
         <ScrollArea className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
           <div className="flex flex-col space-y-3">
@@ -50,10 +50,11 @@ export function MobileNav() {
                 )
             )}
           </div>
-          <div className="flex flex-col space-y-2">
+          <div className="flex flex-col space-y-1">
             {navConfig.sidebarNav.map((item, index) => (
               <div key={index} className="flex flex-col space-y-3 pt-6">
-                <h4 className="font-medium">{item.title}</h4>
+                <h4 className="font-medium underline underline-offset-2">{item.title}</h4>
+                <div className="flex flex-col space-y-2">
                 {item?.items?.length &&
                   item.items.map((item) => (
                     <React.Fragment key={item.href}>
@@ -67,6 +68,7 @@ export function MobileNav() {
                         ))}
                     </React.Fragment>
                   ))}
+                </div>
               </div>
             ))}
           </div>
