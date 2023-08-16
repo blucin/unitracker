@@ -249,8 +249,8 @@ export function AttendanceForm({ ...props }: AttendanceFormProps) {
             control={form.control}
             name="selectedTimeTable"
             render={({ field }) => (
-              <FormItem className="lg:space-y-0">
-                <FormLabel className="lg:hidden">Timetable:</FormLabel>
+              <FormItem>
+                <FormLabel className="text-base">Timetable:</FormLabel>
                 <Select
                   onValueChange={(value) => {
                     field.onChange(value);
