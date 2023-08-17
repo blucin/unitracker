@@ -3,8 +3,12 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import {
   getAllSubjectsIdAndNameByUserId,
   addSubject,
+  deleteSubject,
 } from "~/server/api/services/subjectService";
 import { SubjectFormSchema } from "~/types/formSchemas";
+import { timeTable } from "~/drizzle/out/schema";
+import { eq } from "drizzle-orm";
+import { TRPCError } from '@trpc/server';
 
 export const subjectRouter = createTRPCRouter({
   getAll: protectedProcedure.query(({ ctx }) => {
@@ -28,17 +32,25 @@ export const subjectRouter = createTRPCRouter({
         input.subjectCode
       );
     }),
-  deleteById: protectedProcedure
+  deleteSubject: protectedProcedure
     .input(
       z.object({
-        id: z.string(),
+        subjectId: z.string(),
       })
     )
-    .mutation(({ input, ctx }) => {
-      return ctx.prisma.subject.delete({
-        where: {
-          id: input.id,
-        },
-      });
+    .mutation(async ({ input, ctx }) => {
+      // check if subject is referenced in timetable (we don't want to delete that subject)
+      const result = await ctx.db
+        .select()
+        .from(timeTable)
+        .where(eq(timeTable.subjectId, input.subjectId));
+
+      if(result.length > 0) {
+        throw new TRPCError({
+          message: 'Subject is referenced in timetable',
+          code: 'INTERNAL_SERVER_ERROR',
+        });
+      }
+      return deleteSubject(ctx.db, ctx.session.user.id, input.subjectId);
     }),
 });

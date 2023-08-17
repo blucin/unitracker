@@ -4,6 +4,7 @@ import {
   getAttendanceByDateRangeWithDay,
   getAllAttendance,
   addMultipleAttendance,
+  deleteAttendance,
 } from "~/server/api/services/attendanceService";
 import { getSubjectCountByDateRange } from "~/server/api/services/timetableService";
 import { AttendanceFormSchema } from "~/types/formSchemas";
@@ -102,4 +103,14 @@ export const attendanceRouter = createTRPCRouter({
         input.date
       );
     }),
+  deleteAttendance: protectedProcedure
+    .input(
+      z.object({
+        attendanceId: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return deleteAttendance(ctx.db, input.attendanceId, ctx.session.user.id);
+    }
+  ),
 });

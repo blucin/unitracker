@@ -3,7 +3,11 @@ import { subject, timeTable } from "~/drizzle/out/schema";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import _ from "lodash";
-import { getAllTimetableNames, addTimetable } from "~/server/api/services/timetableService";
+import {
+  getAllTimetableNames,
+  addTimetable,
+  deleteTimetable,
+} from "~/server/api/services/timetableService";
 import { TimetableFormSchema } from "~/types/formSchemas";
 
 export const timeTableRouter = createTRPCRouter({
@@ -71,12 +75,22 @@ export const timeTableRouter = createTRPCRouter({
 
   addTimeTable: protectedProcedure
     .input(TimetableFormSchema)
-    .mutation(({ctx, input}) => {
+    .mutation(({ ctx, input }) => {
       return addTimetable(
         ctx.db,
         ctx.session.user.id,
         input.timetableName,
         input.timetableObject
       );
+    }),
+
+  deleteTimeTable: protectedProcedure
+    .input(
+      z.object({
+        timeTableName: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return deleteTimetable(ctx.db, ctx.session.user.id, input.timeTableName);
     }),
 });
