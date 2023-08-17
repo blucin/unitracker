@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: "UniTrackr",
+  name: "UniTracker",
   url: "https://localhost:3000/",
   ogImage: "",
   description: "Track your attendance with ease.",
