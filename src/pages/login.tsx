@@ -1,4 +1,4 @@
-import { getProviders, getSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import SignUpCard from "@/components/SignUpCard";
 import type {
   GetServerSidePropsContext,
@@ -17,7 +17,6 @@ export default function Login({
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  /*
   const session = await getSession(context);
   if(session) {
     return {
@@ -27,9 +26,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
-  */
-  const providers = await getProviders();
-  return {
-    props: { providers: providers ?? [] },
-  };
 }
