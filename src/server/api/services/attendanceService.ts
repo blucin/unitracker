@@ -66,12 +66,14 @@ export function addMultipleAttendance(
   timetableIds: string[],
   date: Date
 ) {
-  return db.insert(attendance).values(timetableIds.map((id) => {
-    return {
-      id: createId(),
-      userId,
-      timetableId: id,
-      date: format(date, "yyyy-MM-dd"),
-    };
-  }))
+  return db.insert(attendance).values(
+    timetableIds.map((id) => {
+      return {
+        id: createId(),
+        userId,
+        timetableId: id,
+        date: format(date, "yyyy-MM-dd"),
+      };
+    })
+  );
 }
