@@ -17,6 +17,7 @@ export default function Login({
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  /*
   const session = await getSession(context);
   if(session) {
     return {
@@ -26,6 +27,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     };
   }
+  */
   const providers = await getProviders();
   return {
     props: { providers: providers ?? [] },
