@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
@@ -8,14 +7,7 @@ import { Balancer } from "react-wrap-balancer";
 import { ExceptionTable } from "@/components/ExceptionTable";
 
 const Exception: NextPageWithLayout = () => {
-  useSession({
-    required: true,
-    onUnauthenticated() {
-      return { redirectTo: "/login" };
-    },
-  });
   const { data, isLoading } = api.exception.getAll.useQuery();
-
   return (
     <>
       <div className="space-y-2">

@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from "~/pages/_app";
 import { Balancer } from "react-wrap-balancer";
@@ -12,13 +11,6 @@ import { Ban, Check } from "lucide-react";
 import { format } from "date-fns";
 
 const CreateException: NextPageWithLayout = () => {
-  useSession({
-    required: true,
-    onUnauthenticated() {
-      return { redirectTo: "/login" };
-    },
-  });
-
   const mutation = api.exception.addException.useMutation({
     onSuccess: (data, variables) => {
       toast({

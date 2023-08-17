@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
@@ -8,15 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Balancer } from "react-wrap-balancer";
 
 const Timetable: NextPageWithLayout = () => {
-  useSession({
-    required: true,
-    onUnauthenticated() {
-      return { redirectTo: "/login" };
-    },
-  });
   const { data, isLoading } = api.timetable.getAll.useQuery();
-  console.log("TIMETABLE: ", data);
-
   return (
     <>
       <div className="space-y-2">

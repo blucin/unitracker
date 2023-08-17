@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from "~/pages/_app";
 import { api } from "~/utils/api";
@@ -9,12 +8,6 @@ import Link from "next/link";
 import { AttendanceTable } from "@/components/AttendanceTable";
 
 const Attendance: NextPageWithLayout = () => {
-  useSession({
-    required: true,
-    onUnauthenticated() {
-      return { redirectTo: "/login" };
-    },
-  });
   const { data, isLoading } = api.attendance.getAll.useQuery();
   return (
     <>

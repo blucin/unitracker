@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from "~/pages/_app";
 import { Balancer } from "react-wrap-balancer";
@@ -12,13 +11,6 @@ import { toast } from "@/components/ui/use-toast";
 import { Ban, Check } from "lucide-react";
 
 const CreateSubject: NextPageWithLayout = () => {
-  useSession({
-    required: true,
-    onUnauthenticated() {
-      return { redirectTo: "/login" };
-    },
-  });
-
   const mutation = api.subject.addSubjectByUserId.useMutation({
     onSuccess: (data, variables) => {
       toast({

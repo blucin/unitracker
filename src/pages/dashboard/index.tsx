@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from "~/pages/_app";
 import {
@@ -12,13 +11,6 @@ import * as z from "zod";
 import { api } from "~/utils/api";
 
 const DashboardPage: NextPageWithLayout = () => {
-  useSession({
-    required: true,
-    onUnauthenticated() {
-      return { redirectTo: "/login" };
-    },
-  });
-  
   const timeTableNames = api.timetable.getAllTimetableName.useQuery().data;
   const [showDashboard, setShowDashboard] = React.useState(false);
   const [formData, setFormData] = React.useState<z.infer<typeof DashboardFormSchema> | undefined>(undefined);

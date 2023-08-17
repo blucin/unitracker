@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import type { NextPageWithLayout } from "~/pages/_app";
 import { Separator } from "@/components/ui/separator";
@@ -8,12 +7,6 @@ import { LoadingTable } from "@/components/LoadingTable";
 import { Balancer } from "react-wrap-balancer";
 
 const Subject: NextPageWithLayout = () => {
-  useSession({
-    required: true,
-    onUnauthenticated() {
-      return { redirectTo: "/login" };
-    },
-  });
   const { data, isLoading } = api.subject.getAll.useQuery();
 
   return (
