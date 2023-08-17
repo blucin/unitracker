@@ -10,7 +10,7 @@ import { api } from "~/utils/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { Ban, Car, Check } from "lucide-react";
+import { Ban, Check } from "lucide-react";
 import { format } from "date-fns";
 
 const CreateAttendance: NextPageWithLayout = () => {
@@ -21,7 +21,7 @@ const CreateAttendance: NextPageWithLayout = () => {
     },
   });
   const timeTableNames = api.timetable.getAllTimetableName.useQuery().data;
-  
+
   const mutation = api.attendance.addAttendanceByTimetableId.useMutation({
     onSuccess: (data, variables) => {
       toast({
@@ -32,7 +32,7 @@ const CreateAttendance: NextPageWithLayout = () => {
               <Check className="h-6 w-6" color="green" />
               <p>Attendance for: {format(variables.date, "yyyy-MM-dd")}</p>
             </div>
-              <p>Timetable: {variables.selectedTimeTable}</p>
+            <p>Timetable: {variables.selectedTimeTable}</p>
           </>
         ),
       });
@@ -46,7 +46,10 @@ const CreateAttendance: NextPageWithLayout = () => {
             <>
               <div>
                 <Ban className="h-6 w-6" color="red" />
-                <p>Attendance already exist (atleast for one of the selected subject)!</p>
+                <p>
+                  Attendance already exist (atleast for one of the selected
+                  subject)!
+                </p>
               </div>
             </>
           ),
@@ -84,24 +87,25 @@ const CreateAttendance: NextPageWithLayout = () => {
         </p>
       </div>
       <Separator className="my-5" />
-      <Card className="p-5">
-        <Tabs defaultValue="by_date" className="space-y-2">
-          <TabsList className="w-full grid grid-cols-2">
-            <TabsTrigger value="by_date">By Date</TabsTrigger>
-            <TabsTrigger value="by_date_range" disabled>
-              By Date Range
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent className="p-2" value="by_date">
-            <AttendanceForm
-              handleSubmit={onSubmit}
-              disableSubmit={false}
-              timeTableNames={timeTableNames}
-            />
-          </TabsContent>
-          <TabsContent className="p-2" value="by_date_range"> WIP </TabsContent>
-        </Tabs>
-      </Card>
+      <Tabs defaultValue="by_date" className="space-y-2">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="by_date">By Date</TabsTrigger>
+          <TabsTrigger value="by_date_range" disabled>
+            By Date Range
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent className="p-2" value="by_date">
+          <AttendanceForm
+            handleSubmit={onSubmit}
+            disableSubmit={false}
+            timeTableNames={timeTableNames}
+          />
+        </TabsContent>
+        <TabsContent className="p-2" value="by_date_range">
+          {" "}
+          WIP{" "}
+        </TabsContent>
+      </Tabs>
     </>
   );
 };
