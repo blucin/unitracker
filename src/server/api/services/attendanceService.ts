@@ -77,3 +77,13 @@ export function addMultipleAttendance(
     })
   );
 }
+
+export function deleteAttendance(
+  db: PlanetScaleDatabase,
+  attendanceId: string,
+  userId: string
+) {
+  return db
+    .delete(attendance)
+    .where(and(eq(attendance.id, attendanceId), eq(attendance.userId, userId)));
+}

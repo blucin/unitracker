@@ -125,3 +125,17 @@ export function addTimetable(
       };
     }))
 }
+
+export function deleteTimetable(
+  db: PlanetScaleDatabase,
+  userId: string,
+  timetableName: string
+) {
+  return db.delete(timeTable)
+    .where(
+      and(
+        eq(timeTable.userId, userId),
+        eq(timeTable.timetableName, timetableName)
+      )
+    )
+}

@@ -56,3 +56,16 @@ export function addSubject(
     userId: userId,
   });
 }
+
+export function deleteSubject(
+  db: PlanetScaleDatabase,
+  userId: string,
+  subjectId: string
+) {
+  return db.delete(subject).where(
+    and(
+      eq(subject.userId, userId),
+      eq(subject.id, subjectId)
+    )
+  );
+}
