@@ -9,16 +9,51 @@ import {
 } from "@/components/ui/table";
 import { cn } from "~/lib/utils";
 import type { RouterOutput } from "~/server/api/root";
-import { buttonVariants } from "@/components/ui/button";
-import { Check, X, Trash2 } from "lucide-react";
+import { Ban, Check, X } from "lucide-react";
+import { DeleteButton } from "@/components/DeleteButton";
+import { api } from "~/utils/api";
+import { toast } from "@/components/ui/use-toast";
 
 type SubjectTableProps = {
   className?: string;
   data: RouterOutput["subject"]["getAll"] | undefined;
-  handleDelete: (id: string) => void;
 };
 
 export function SubjectTable({ ...props }: SubjectTableProps) {
+  const ctx = api.useContext();
+  const deleteSubjectMutation = api.subject.deleteSubject.useMutation({
+    onSuccess: (data, variables) => {
+      void ctx.subject.getAll.invalidate();
+      toast({
+        title: "Sucessfully deleted subject!",
+        description: (
+          <>
+            <div>
+              <Check className="h-6 w-6" color="green" />
+              <p>Subject deleted sucessfully!</p>
+            </div>
+            <p>Internal Id: {variables.subjectId}</p>
+          </>
+        ),
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: (
+          <>
+            <div>
+              <Ban className="h-6 w-6" color="red" />
+              <p>{error.message}</p>
+            </div>
+          </>
+        ),
+      });
+    },
+  });
+  const handleDelete = (id: string) => {
+    deleteSubjectMutation.mutate({ subjectId: id });
+  };
   return (
     <Table className={cn(props.className, "")}>
       <TableCaption>A list of subjects.</TableCaption>
@@ -37,17 +72,11 @@ export function SubjectTable({ ...props }: SubjectTableProps) {
             <TableCell>
               {subject.hasLab ? <Check color="green" /> : <X color="red" />}
             </TableCell>
-            <div
-              className={cn(
-                buttonVariants({
-                  size: "sm",
-                  variant: "ghost",
-                }),
-                "mt-2 w-9 bg-red-400 bg-opacity-20 px-0 hover:border-2 border-red-600 dark:bg-red-950"
-              )}
-            >
-              <Trash2 className="h-4 w-4" color="red" />
-            </div>
+            <DeleteButton
+              handleClick={() => handleDelete(subject.id)}
+              title="Delete Subject"
+              description="Are you sure you want to delete this subject?"
+            />
           </TableRow>
         ))}
       </TableBody>

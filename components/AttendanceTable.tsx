@@ -9,12 +9,14 @@ import {
 } from "@/components/ui/table";
 import { cn } from "~/lib/utils";
 import type { RouterOutput } from "~/server/api/root";
-import { buttonVariants } from "@/components/ui/button";
-import { Check, X, Trash2 } from "lucide-react";
+import { Ban, Check, X } from "lucide-react";
 import React from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
+import { DeleteButton } from "@/components/DeleteButton";
+import { api } from "~/utils/api";
+import { toast } from "@/components/ui/use-toast";
 
 type AttendanceTableProps = {
   className?: string;
@@ -22,10 +24,46 @@ type AttendanceTableProps = {
 };
 
 export function AttendanceTable({ ...props }: AttendanceTableProps) {
+  const ctx = api.useContext();
   const [showDetailedView, setShowDetailedView] = React.useState(false);
 
   const handleSwitchClick = () => {
     setShowDetailedView(!showDetailedView);
+  };
+
+  const deleteAttendanceMutation = api.attendance.deleteAttendance.useMutation({
+    onSuccess: (data, variables) => {
+      void ctx.attendance.getAll.invalidate();
+      toast({
+        title: "Sucessfully deleted attendance!",
+        description: (
+          <>
+            <div>
+              <Check className="h-6 w-6" color="green" />
+              <p>Attendance deleted sucessfully!</p>
+            </div>
+            <p>Internal Id: {variables.attendanceId}</p>
+          </>
+        ),
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: (
+          <>
+            <div>
+              <Ban className="h-6 w-6" color="red" />
+              <p>{error.message}</p>
+            </div>
+          </>
+        ),
+      });
+    },
+  });
+
+  const handleDelete = (id: string) => {
+    deleteAttendanceMutation.mutate({ attendanceId: id });
   };
 
   return (
@@ -58,9 +96,7 @@ export function AttendanceTable({ ...props }: AttendanceTableProps) {
               </TableCell>
               {showDetailedView && (
                 <>
-                  <TableCell>
-                    {attendance.dayName}
-                  </TableCell>
+                  <TableCell>{attendance.dayName}</TableCell>
                   <TableCell>
                     {attendance.startTime.slice(0, 5)} to{" "}
                     {attendance.endTime.slice(0, 5)}
@@ -71,17 +107,11 @@ export function AttendanceTable({ ...props }: AttendanceTableProps) {
               <TableCell>
                 {attendance.isLab ? <Check color="green" /> : <X color="red" />}
               </TableCell>
-              <div
-                className={cn(
-                  buttonVariants({
-                    size: "sm",
-                    variant: "ghost",
-                  }),
-                  "mt-2 w-9 border-red-600 bg-red-400 bg-opacity-20 px-0 hover:border-2 dark:bg-red-950"
-                )}
-              >
-                <Trash2 className="h-4 w-4" color="red" />
-              </div>
+              <DeleteButton
+                handleClick={() => handleDelete(attendance.id)}
+                title="Delete Attendance"
+                description="Are you sure you want to delete this attendance record?"
+              />
             </TableRow>
           ))}
         </TableBody>
