@@ -5,6 +5,16 @@ import { SubjectTable } from "@/components/SubjectTable";
 import { api } from "~/utils/api";
 import { LoadingTable } from "@/components/LoadingTable";
 import { Balancer } from "react-wrap-balancer";
+import { requireAuth } from "~/utils/requireAuth";
+import type { GetServerSidePropsContext } from "next";
+
+export async function getServerSideProps(ctx:GetServerSidePropsContext) {
+  return requireAuth(ctx, ({session})=> {
+    return {
+      props: {session},
+    }
+  });
+}
 
 const Subject: NextPageWithLayout = () => {
   const { data, isLoading } = api.subject.getAll.useQuery();

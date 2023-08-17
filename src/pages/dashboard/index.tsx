@@ -9,6 +9,16 @@ import * as React from 'react';
 import { DashboardFormSchema } from "~/types/formSchemas";
 import * as z from "zod";
 import { api } from "~/utils/api";
+import { requireAuth } from "~/utils/requireAuth";
+import type { GetServerSidePropsContext } from "next";
+
+export async function getServerSideProps(ctx:GetServerSidePropsContext) {
+  return requireAuth(ctx, ({session})=> {
+    return {
+      props: {session},
+    }
+  });
+}
 
 const DashboardPage: NextPageWithLayout = () => {
   const timeTableNames = api.timetable.getAllTimetableName.useQuery().data;

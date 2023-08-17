@@ -5,6 +5,16 @@ import { LoadingTable } from "@/components/LoadingTable";
 import { TimeTable } from "@/components/TimeTable";
 import { Separator } from "@/components/ui/separator";
 import { Balancer } from "react-wrap-balancer";
+import { requireAuth } from "~/utils/requireAuth";
+import type { GetServerSidePropsContext } from "next";
+
+export async function getServerSideProps(ctx:GetServerSidePropsContext) {
+  return requireAuth(ctx, ({session})=> {
+    return {
+      props: {session},
+    }
+  });
+}
 
 const Timetable: NextPageWithLayout = () => {
   const { data, isLoading } = api.timetable.getAll.useQuery();

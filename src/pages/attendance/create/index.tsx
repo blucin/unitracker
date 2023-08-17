@@ -11,6 +11,16 @@ import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
 import { Ban, Check } from "lucide-react";
 import { format } from "date-fns";
+import { requireAuth } from "~/utils/requireAuth";
+import type { GetServerSidePropsContext } from "next";
+
+export async function getServerSideProps(ctx:GetServerSidePropsContext) {
+  return requireAuth(ctx, ({session})=> {
+    return {
+      props: {session},
+    }
+  });
+}
 
 const CreateAttendance: NextPageWithLayout = () => {
   const timeTableNames = api.timetable.getAllTimetableName.useQuery().data;

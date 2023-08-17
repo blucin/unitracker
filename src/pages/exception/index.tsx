@@ -5,6 +5,16 @@ import { LoadingTable } from "@/components/LoadingTable";
 import { Separator } from "@/components/ui/separator";
 import { Balancer } from "react-wrap-balancer";
 import { ExceptionTable } from "@/components/ExceptionTable";
+import { requireAuth } from "~/utils/requireAuth";
+import type { GetServerSidePropsContext } from "next";
+
+export async function getServerSideProps(ctx:GetServerSidePropsContext) {
+  return requireAuth(ctx, ({session})=> {
+    return {
+      props: {session},
+    }
+  });
+}
 
 const Exception: NextPageWithLayout = () => {
   const { data, isLoading } = api.exception.getAll.useQuery();

@@ -6,6 +6,16 @@ import { Separator } from "@/components/ui/separator";
 import { Balancer } from "react-wrap-balancer";
 import Link from "next/link";
 import { AttendanceTable } from "@/components/AttendanceTable";
+import { requireAuth } from "~/utils/requireAuth";
+import type { GetServerSidePropsContext } from "next";
+
+export async function getServerSideProps(ctx:GetServerSidePropsContext) {
+  return requireAuth(ctx, ({session})=> {
+    return {
+      props: {session},
+    }
+  });
+}
 
 const Attendance: NextPageWithLayout = () => {
   const { data, isLoading } = api.attendance.getAll.useQuery();

@@ -9,6 +9,16 @@ import * as React from "react";
 import * as z from "zod";
 import { toast } from "@/components/ui/use-toast";
 import { Ban, Check } from "lucide-react";
+import { requireAuth } from "~/utils/requireAuth";
+import type { GetServerSidePropsContext } from "next";
+
+export async function getServerSideProps(ctx:GetServerSidePropsContext) {
+  return requireAuth(ctx, ({session})=> {
+    return {
+      props: {session},
+    }
+  });
+}
 
 const CreateTimetable: NextPageWithLayout = () => {
   const mutation = api.timetable.addTimeTable.useMutation({
