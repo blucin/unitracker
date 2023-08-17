@@ -1,6 +1,11 @@
-# [WIP] UniTracker
+<h2 align="center">
+<img src="https://github.com/blucin/unitracker/blob/dev/public/icon-512x512.png?raw=true" width="100" alt="Logo" style="border-radius: 50%;"/><br/>
+	UniTracker
+</h2>
 
 Full stack attendance management solution for a single user as of now, built with Next.js, NextAuth.js, Prisma, Tailwind CSS and tRPC, with planetscale as the database. Shadcn ui is used for the UI components.
+
+![dashboard screenshot](/public/unitracker_dashboard.png)
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
@@ -11,6 +16,7 @@ This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3
 - [tRPC](https://trpc.io)
 - [Planetscale](https://planetscale.com)
 - [Shadcn UI](https://ui.shadcn.com/)
+- [Drizzle ORM](https://orm.drizzle.team/)
 
 ## Learn More
 
