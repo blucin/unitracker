@@ -1,6 +1,5 @@
-import { useSession, signIn, signOut, getProviders } from "next-auth/react";
+import { getProviders, getSession } from "next-auth/react";
 import SignUpCard from "@/components/SignUpCard";
-import { getServerAuthSession } from "~/server/auth";
 import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
@@ -18,16 +17,15 @@ export default function Login({
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  /* disable for now, the sign in button will redirect for us 
-  const session = await getServerAuthSession(context);
-  if (session) {
+  const session = await getSession(context);
+  if(session) {
     return {
       redirect: {
         destination: "/dashboard",
+        permanent: false,
       },
     };
   }
-  */
   const providers = await getProviders();
   return {
     props: { providers: providers ?? [] },
