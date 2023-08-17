@@ -15,11 +15,6 @@ const Subject: NextPageWithLayout = () => {
     },
   });
   const { data, isLoading } = api.subject.getAll.useQuery();
-  const { mutate } = api.subject.deleteById.useMutation();
-
-  const handleDelete = (_id: string) => {
-    mutate({ id: _id });
-  };
 
   return (
     <>
@@ -33,7 +28,7 @@ const Subject: NextPageWithLayout = () => {
       {isLoading ? (
         <LoadingTable rows={10} cols={3} />
       ) : (
-        <SubjectTable data={data} handleDelete={handleDelete} />
+        <SubjectTable data={data} />
       )}
     </>
   );
