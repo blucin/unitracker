@@ -1,7 +1,7 @@
 {
     "background_color": "#030711",
     "display": "fullscreen",
-    "scope": "/",
+    "scope": "https://attendance-management-seven.vercel.app/",
     "start_url": "/",
     "name": "UniTracker",
     "short_name": "UniTracker",
