@@ -1,6 +1,6 @@
 {
     "background_color": "#030711",
-    "display": "standalone",
+    "display": "fullscreen",
     "scope": "/",
     "start_url": "/",
     "name": "UniTracker",
