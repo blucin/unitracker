@@ -111,8 +111,8 @@ export function addTimetable(
     isLab: "true" | "false";
   }[]
 ) {
-  return db.insert(timeTable)
-    .values(timetableObject.map((item) => {
+  return db.insert(timeTable).values(
+    timetableObject.map((item) => {
       return {
         id: createId(),
         dayName: item.dayName,
@@ -120,10 +120,11 @@ export function addTimetable(
         timetableName: timetableName,
         subjectId: item.subjectId,
         startTime: `${item.startTime}:00`,
-        endTime: `${item.startTime}:00`,
+        endTime: `${item.endTime}:00`,
         isLab: item.isLab === "true" ? 1 : 0,
       };
-    }))
+    })
+  );
 }
 
 export function deleteTimetable(
@@ -131,11 +132,12 @@ export function deleteTimetable(
   userId: string,
   timetableName: string
 ) {
-  return db.delete(timeTable)
+  return db
+    .delete(timeTable)
     .where(
       and(
         eq(timeTable.userId, userId),
         eq(timeTable.timetableName, timetableName)
       )
-    )
+    );
 }
