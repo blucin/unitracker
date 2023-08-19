@@ -33,7 +33,7 @@ const CreateException: NextPageWithLayout = () => {
             </div>
               <p>Start Date: {format(variables.startDate, "yyyy-MM-dd")}</p>
             {(variables.endDate && variables.isRange==="true") && (
-              <p>End Date: {format(variables.startDate, "yyyy-MM-dd")}</p>
+              <p>End Date: {format(variables.endDate, "yyyy-MM-dd")}</p>
             )}
           </>
         ),
