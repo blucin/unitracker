@@ -72,7 +72,6 @@ const CreateTimetable: NextPageWithLayout = () => {
 
   const onSubmit = (formData: z.infer<typeof TimetableFormSchema>) => {
     mutation.mutate(formData);
-    console.log("FORM DATA: ", formData);
   };
 
   // TODO - add loading and error states
