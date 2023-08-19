@@ -85,20 +85,20 @@ export function TimeTable({ ...props }: TimeTableProps) {
                     </TableCaption>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Start time</TableHead>
-                        <TableHead>End time</TableHead>
+                        <TableHead>Time</TableHead>
                         <TableHead>Subject</TableHead>
-                        <TableHead>Subject code</TableHead>
-                        <TableHead>IsLab?</TableHead>
+                        <TableHead>Code</TableHead>
+                        <TableHead>Lab</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {dayData.map((timeSlot) => (
+                      {dayData
+                        .sort((a, b) => a.TimeTable.startTime.localeCompare(b.TimeTable.startTime))
+                        .map((timeSlot) => (
                         <TableRow key={timeSlot.TimeTable.id}>
-                          <TableCell>{timeSlot.TimeTable.startTime}</TableCell>
-                          <TableCell>{timeSlot.TimeTable.endTime}</TableCell>
+                          <TableCell>{timeSlot.TimeTable.startTime.slice(0,5)} to {timeSlot.TimeTable.endTime.slice(0,5)}</TableCell>
                           <TableCell>{timeSlot.Subject.subjectName}</TableCell>
-                          <TableCell>{timeSlot.Subject.subjectCode}</TableCell>
+                          <TableCell>{timeSlot.Subject.subjectCode?timeSlot.Subject.subjectCode:"-"}</TableCell>
                           <TableCell>
                             {timeSlot.TimeTable.isLab ? <Check color="green" /> : <X color="red" />}
                           </TableCell>
