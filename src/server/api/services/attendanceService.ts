@@ -25,8 +25,8 @@ export function getAttendanceByDateRangeWithDay(
       and(
         eq(timeTable.userId, userId),
         eq(timeTable.timetableName, timetableName),
-        sql`${attendance.date} >= ${startDate.toISOString().slice(0, 10)}`,
-        sql`${attendance.date} <= ${endDate.toISOString().slice(0, 10)}`
+        sql`${attendance.date} >= ${format(startDate, "yyyy-MM-dd")}`,
+        sql`${attendance.date} <= ${format(endDate, "yyyy-MM-dd")}`
       )
     )
     .groupBy(subject.subjectName, timeTable.isLab, timeTable.dayName)
