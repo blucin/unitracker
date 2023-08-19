@@ -6,10 +6,13 @@ import { createId } from "@paralleldrive/cuid2";
 import { DayNameType } from "~/types/formSchemas";
 import z from "zod";
 
-export function getAllTimetableNames(
-  db: PlanetScaleDatabase,
-  userId: string
-) {
+// for merging overlapping date ranges
+import { getExceptionsByDateRange } from "~/server/api/services/exceptionService";
+import { mergeOverlappingDateRanges } from "~/utils/filterArrayofDayRanges";
+import { type InferModel } from "drizzle-orm";
+type sqlDayType = InferModel<typeof timeTable>["dayName"];
+
+export function getAllTimetableNames(db: PlanetScaleDatabase, userId: string) {
   return db
     .select({
       timeTableName: sql<string>`DISTINCT ${timeTable.timetableName}`,
@@ -37,7 +40,7 @@ export function getByTimetableId(
     .orderBy(timeTable.dayName);
 }
 
-export function getSubjectCountByDateRange(
+export async function getSubjectCountByDateRange(
   db: PlanetScaleDatabase,
   timetableName: string,
   userId: string,
@@ -46,6 +49,48 @@ export function getSubjectCountByDateRange(
 ) {
   // get weekday counts between startDate and endDate
   const dayCountByWeekday = weekdayCount(startDate, endDate);
+
+  // we need to subtract the holidays from the dayCountByWeekday
+  // holidays are stored in the holidays table as date ranges
+  // single holidays are stored as a date range with the same start and end date
+  // we need to merge the date ranges before subtracting them from dayCountByWeekday
+  const overlappingDateRangeArr = await getExceptionsByDateRange(
+    db,
+    userId,
+    startDate,
+    endDate
+  );
+
+  // merge overlapping date ranges
+  const filteredDateRangeArr = mergeOverlappingDateRanges(
+    overlappingDateRangeArr.map((dateRange) => {
+      return {
+        start: new Date(dateRange.startDate),
+        end: new Date(dateRange.endDate),
+      };
+    })
+  );
+
+  // get weekday counts between startDate and endDate and
+  // reduce it to a map of weekday and count
+  const exceptionDayCountByWeekday = filteredDateRangeArr.reduce(
+    (acc, dateRange) => {
+      const dayCount = weekdayCount(dateRange.start, dateRange.end);
+      for (const [key, value] of dayCount.entries()) {
+        acc.set(key, acc.get(key)! + value);
+      }
+      return acc;
+    },
+    new Map<sqlDayType, number>([
+      ["Sunday", 0],
+      ["Monday", 0],
+      ["Tuesday", 0],
+      ["Wednesday", 0],
+      ["Thursday", 0],
+      ["Friday", 0],
+      ["Saturday", 0],
+    ])
+  );
 
   // multiply by dayCountByWeekday[dayName] to get total count
   const sq = db
@@ -57,25 +102,25 @@ export function getSubjectCountByDateRange(
         CASE 
           WHEN TimeTable.dayName = 'Sunday' THEN COUNT(*) * ${dayCountByWeekday.get(
             "Sunday"
-          )}
+          )} - ${exceptionDayCountByWeekday.get("Sunday")}
           WHEN TimeTable.dayName = 'Monday' THEN COUNT(*) * ${dayCountByWeekday.get(
             "Monday"
-          )}
+          )} - ${exceptionDayCountByWeekday.get("Monday")}
           WHEN TimeTable.dayName = 'Tuesday' THEN COUNT(*) * ${dayCountByWeekday.get(
             "Tuesday"
-          )}
+          )} - ${exceptionDayCountByWeekday.get("Tuesday")}
           WHEN TimeTable.dayName = 'Wednesday' THEN COUNT(*) * ${dayCountByWeekday.get(
             "Wednesday"
-          )}
+          )} - ${exceptionDayCountByWeekday.get("Wednesday")}
           WHEN TimeTable.dayName = 'Thursday' THEN COUNT(*) * ${dayCountByWeekday.get(
             "Thursday"
-          )}
+          )} - ${exceptionDayCountByWeekday.get("Thursday")}
           WHEN TimeTable.dayName = 'Friday' THEN COUNT(*) * ${dayCountByWeekday.get(
             "Friday"
-          )}
+          )} - ${exceptionDayCountByWeekday.get("Friday")}
           WHEN TimeTable.dayName = 'Saturday' THEN COUNT(*) * ${dayCountByWeekday.get(
             "Saturday"
-          )}
+          )} - ${exceptionDayCountByWeekday.get("Saturday")}
         END AS count`,
     })
     .from(timeTable)
