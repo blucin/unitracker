@@ -13,7 +13,7 @@ import {
 import { api } from "~/utils/api";
 import { DeleteButton } from "@/components/DeleteButton";
 import { toast } from "@/components/ui/use-toast";
-import { Ban, Check } from "lucide-react";
+import { Ban, Check, X } from "lucide-react";
 
 type TimeTableProps = {
   className?: string;
@@ -100,7 +100,7 @@ export function TimeTable({ ...props }: TimeTableProps) {
                           <TableCell>{timeSlot.Subject.subjectName}</TableCell>
                           <TableCell>{timeSlot.Subject.subjectCode}</TableCell>
                           <TableCell>
-                            {timeSlot.Subject.hasLab ? "Yes" : "No"}
+                            {timeSlot.TimeTable.isLab ? <Check color="green" /> : <X color="red" />}
                           </TableCell>
                         </TableRow>
                       ))}
