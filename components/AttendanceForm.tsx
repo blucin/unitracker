@@ -58,7 +58,7 @@ function FormUnit({ timeTableName, form }: FormUnitProps) {
       data?.filter(
         (item) =>
           item.dayName === date.toLocaleDateString("en-US", { weekday: "long" })
-      )
+      ).sort((a, b) => a.startTime.localeCompare(b.startTime))
     );
   };
 
