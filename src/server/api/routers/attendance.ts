@@ -78,7 +78,11 @@ export const attendanceRouter = createTRPCRouter({
               _.map(value, (value4, key4) => {
                 if (value3.isLab === value4.isLab) {
                   const percentage =
-                    (Number(value3.count) / Number(value4.count)) * 100;
+                    Number(value4.count) === 0
+                      ? 0
+                      : (Math.abs(Number(value3.count)) /
+                          Math.abs(Number(value4.count))) *
+                        100;
                   if (value3.isLab) {
                     result.lab[key] = Math.round(percentage * 100) / 100;
                   } else {
@@ -111,6 +115,5 @@ export const attendanceRouter = createTRPCRouter({
     )
     .mutation(({ ctx, input }) => {
       return deleteAttendance(ctx.db, input.attendanceId, ctx.session.user.id);
-    }
-  ),
+    }),
 });
