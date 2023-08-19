@@ -54,6 +54,7 @@ function FormUnit({ timeTableName, form }: FormUnitProps) {
   const handleDateChange = (date: Date | undefined) => {
     // set Formmated data it will trigger the component to render new fields
     if (!date) return;
+    form.unregister("timetableObjectIds");
     setFormattedData(
       data?.filter(
         (item) =>
