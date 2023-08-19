@@ -53,7 +53,7 @@ export const timeTableRouter = createTRPCRouter({
           id: timeTable.id,
           dayName: timeTable.dayName,
           subjectName: subject.subjectName,
-          isLab: subject.hasLab,
+          isLab: timeTable.isLab,
           startTime: timeTable.startTime,
           endTime: timeTable.endTime,
         })
