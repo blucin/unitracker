@@ -79,7 +79,7 @@ const LandingPage: NextPage = () => {
                 Star
               </Button>
             </Link>
-            <Button onClick={() => signIn()} className="w-24">
+            <Button onClick={() => signIn()} className="w-28">
               Sign In
               <ArrowRight
                 className="ml-1 h-6 w-4 align-middle"
